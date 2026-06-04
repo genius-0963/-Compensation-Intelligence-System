@@ -1,0 +1,315 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  HR_MANAGER
+  ANALYST
+  VIEWER
+}
+
+enum CandidateStatus {
+  ACTIVE
+  INTERVIEWING
+  OFFER_EXTENDED
+  HIRED
+  REJECTED
+  WITHDRAWN
+}
+
+enum OfferStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  ACCEPTED
+  DECLINED
+  EXPIRED
+}
+
+enum InsightType {
+  NEGOTIATION
+  MARKET_POSITION
+  EQUITY_ANALYSIS
+  RETENTION_RISK
+  COUNTER_OFFER
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  role         UserRole @default(VIEWER)
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Department {
+  id          String     @id @default(cuid())
+  name        String
+  code        String     @unique
+  description String?
+  headCount   Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  roles       Role[]
+  employees   Employee[]
+
+  @@map("departments")
+}
+
+model Role {
+  id               String             @id @default(cuid())
+  title            String
+  family           String
+  description      String?
+  departmentId     String
+  department       Department         @relation(fields: [departmentId], references: [id])
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  employees        Employee[]
+  bands            CompensationBand[]
+  benchmarks       SalaryBenchmark[]
+  offers           Offer[]
+  marketDataPoints MarketDataPoint[]
+
+  @@index([departmentId])
+  @@map("roles")
+}
+
+model Level {
+  id          String             @id @default(cuid())
+  code        String             @unique
+  name        String
+  rank        Int                @unique
+  description String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  employees   Employee[]
+  bands       CompensationBand[]
+  benchmarks  SalaryBenchmark[]
+  offers      Offer[]
+
+  @@map("levels")
+}
+
+model Location {
+  id                 String             @id @default(cuid())
+  city               String
+  state              String
+  country            String
+  region             String?
+  costOfLivingIndex  Float              @default(1.0)
+  currency           String             @default("USD")
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  employees          Employee[]
+  bands              CompensationBand[]
+  benchmarks         SalaryBenchmark[]
+  offers             Offer[]
+  marketDataPoints   MarketDataPoint[]
+
+  @@unique([city, state, country])
+  @@map("locations")
+}
+
+model Employee {
+  id                String          @id @default(cuid())
+  employeeId        String          @unique
+  firstName         String
+  lastName          String
+  email             String          @unique
+  phone             String?
+  avatarUrl         String?
+  roleId            String
+  levelId           String
+  locationId        String
+  departmentId      String
+  currentSalary     Float
+  equity            Float           @default(0)
+  bonus             Float           @default(0)
+  totalCompensation Float
+  hireDate          DateTime
+  status            String          @default("ACTIVE")
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  role              Role            @relation(fields: [roleId], references: [id])
+  level             Level           @relation(fields: [levelId], references: [id])
+  location          Location        @relation(fields: [locationId], references: [id])
+  department        Department      @relation(fields: [departmentId], references: [id])
+  salaryHistory     SalaryHistory[]
+
+  @@index([roleId])
+  @@index([levelId])
+  @@index([locationId])
+  @@index([departmentId])
+  @@map("employees")
+}
+
+model Candidate {
+  id             String          @id @default(cuid())
+  firstName      String
+  lastName       String
+  email          String          @unique
+  phone          String?
+  currentCompany String?
+  currentTitle   String?
+  currentSalary  Float?
+  expectedSalary Float?
+  noticePeriod   String?
+  source         String?
+  status         CandidateStatus @default(ACTIVE)
+  notes          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  offers         Offer[]
+
+  @@map("candidates")
+}
+
+model CompensationBand {
+  id            String    @id @default(cuid())
+  roleId        String
+  levelId       String
+  locationId    String
+  minSalary     Float
+  midSalary     Float
+  maxSalary     Float
+  currency      String    @default("USD")
+  effectiveDate DateTime
+  expiryDate    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  role          Role      @relation(fields: [roleId], references: [id])
+  level         Level     @relation(fields: [levelId], references: [id])
+  location      Location  @relation(fields: [locationId], references: [id])
+
+  @@unique([roleId, levelId, locationId])
+  @@index([roleId])
+  @@index([levelId])
+  @@index([locationId])
+  @@map("compensation_bands")
+}
+
+model SalaryBenchmark {
+  id            String   @id @default(cuid())
+  roleId        String
+  levelId       String
+  locationId    String
+  p10           Float
+  p25           Float
+  p50           Float
+  p75           Float
+  p90           Float
+  source        String
+  surveyDate    DateTime
+  currency      String   @default("USD")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  role          Role     @relation(fields: [roleId], references: [id])
+  level         Level    @relation(fields: [levelId], references: [id])
+  location      Location @relation(fields: [locationId], references: [id])
+
+  @@index([roleId])
+  @@index([levelId])
+  @@index([locationId])
+  @@map("salary_benchmarks")
+}
+
+model MarketDataPoint {
+  id           String   @id @default(cuid())
+  roleId       String
+  locationId   String
+  period       DateTime
+  medianSalary Float
+  meanSalary   Float?
+  sampleSize   Int?
+  source       String
+  yoyGrowth    Float?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  role         Role     @relation(fields: [roleId], references: [id])
+  location     Location @relation(fields: [locationId], references: [id])
+
+  @@index([roleId])
+  @@index([locationId])
+  @@map("market_data_points")
+}
+
+model Offer {
+  id                String          @id @default(cuid())
+  candidateId       String
+  roleId            String
+  levelId           String
+  locationId        String
+  baseSalary        Float
+  equity            Float           @default(0)
+  signingBonus      Float           @default(0)
+  annualBonus       Float           @default(0)
+  totalCompensation Float
+  score             Float?
+  scoreGrade        String?
+  status            OfferStatus     @default(DRAFT)
+  notes             String?
+  validUntil        DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  candidate         Candidate       @relation(fields: [candidateId], references: [id])
+  role              Role            @relation(fields: [roleId], references: [id])
+  level             Level           @relation(fields: [levelId], references: [id])
+  location          Location        @relation(fields: [locationId], references: [id])
+  insights          NegotiationInsight[]
+
+  @@index([candidateId])
+  @@index([roleId])
+  @@index([levelId])
+  @@index([locationId])
+  @@map("offers")
+}
+
+model SalaryHistory {
+  id               String   @id @default(cuid())
+  employeeId       String
+  previousSalary   Float
+  newSalary        Float
+  changePercentage Float
+  reason           String
+  effectiveDate    DateTime
+  createdAt        DateTime @default(now())
+
+  employee         Employee @relation(fields: [employeeId], references: [id])
+
+  @@index([employeeId])
+  @@map("salary_histories")
+}
+
+model NegotiationInsight {
+  id         String      @id @default(cuid())
+  offerId    String
+  type       InsightType
+  title      String
+  insight    String
+  confidence Float
+  priority   Int         @default(0)
+  metadata   String?     // Using String to store serialized JSON for SQLite compatibility, or use Json if on Postgres
+  createdAt  DateTime    @default(now())
+
+  offer      Offer       @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  @@index([offerId])
+  @@map("negotiation_insights")
+}
