@@ -1,18 +1,9 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
-export default function HeadcountByDept() {
-  const [data, setData] = useState<any[]>([]);
-
-  useEffect(() => {
-    fetch('/api/dashboard/stats')
-      .then(res => res.json())
-      .then(stats => setData(stats.departments || []))
-      .catch(console.error);
-  }, []);
-
-  if (!data.length) return <div className="text-sm text-slate-500 flex items-center justify-center h-full">No data available</div>;
+export function HeadcountByDeptChart({ data }: { data: { name: string, count: number }[] }) {
+  if (!data || !data.length) return <div className="text-sm text-slate-500 flex items-center justify-center h-full">No data available</div>;
 
   return (
     <ResponsiveContainer width="100%" height={300}>

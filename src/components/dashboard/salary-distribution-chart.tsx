@@ -1,8 +1,8 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-export default function SalaryDistributionChart() {
+export function SalaryDistributionChart() {
   // Mock distribution data for demonstration
   const data = [
     { range: '$50k', count: 5 },
