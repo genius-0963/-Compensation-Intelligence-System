@@ -1,39 +1,114 @@
 'use client';
-import React from 'react';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, Users, UserPlus, Layers, BarChart3, FileText } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { 
+  LayoutDashboard, 
+  BarChart3, 
+  Building2, 
+  TrendingUp, 
+  Scale, 
+  MapPin, 
+  Layers, 
+  Bookmark, 
+  Eye, 
+  Settings,
+  ChevronLeft,
+  Search,
+  Plus,
+  Bell,
+  User,
+  Zap
+} from 'lucide-react';
 
 export default function Sidebar() {
+  const pathname = usePathname();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const navItems = [
+    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Salary Explorer', href: '/explorer', icon: BarChart3 },
+    { name: 'Companies', href: '/companies', icon: Building2 },
+    { name: 'Analytics', href: '/analytics', icon: TrendingUp },
+    { name: 'Comp Compare', href: '/compare', icon: Scale },
+    { name: 'Locations', href: '/locations', icon: MapPin },
+    { name: 'Levels', href: '/levels', icon: Layers },
+  ];
+
+  const secondaryItems = [
+    { name: 'Saved', href: '/saved', icon: Bookmark },
+    { name: 'Watchlist', href: '/watchlist', icon: Eye },
+    { name: 'Settings', href: '/settings', icon: Settings },
+  ];
+
   return (
-    <aside className="w-64 bg-slate-900 border-r border-white/5 hidden md:flex flex-col">
-      <div className="p-4 border-b border-white/5 flex items-center gap-2">
-        <div className="h-8 w-8 rounded-lg bg-violet-600 flex items-center justify-center text-white font-bold">
-          CI
-        </div>
-        <h2 className="text-xl font-semibold text-slate-50">CompIntel</h2>
+    <aside className={`bg-white border-r border-gray-100 flex flex-col transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'}`}>
+      {/* Logo Section */}
+      <div className="h-16 flex items-center px-6 border-b border-gray-50">
+        <Link href="/dashboard" className="flex items-center gap-3 group">
+          <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform shrink-0">
+            CI
+          </div>
+          {!isCollapsed && (
+            <span className="text-lg font-bold tracking-tight text-gray-900 truncate">CompIntel</span>
+          )}
+        </Link>
       </div>
-      <nav className="flex-1 p-4 space-y-1">
-        <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-violet-600/10 text-violet-400">
-          <LayoutDashboard className="h-5 w-5" />
-          Dashboard
-        </Link>
-        <Link href="/employees" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors">
-          <Users className="h-5 w-5" />
-          Employees
-        </Link>
-        <Link href="/candidates" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors">
-          <UserPlus className="h-5 w-5" />
-          Candidates
-        </Link>
-        <Link href="/bands" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors">
-          <Layers className="h-5 w-5" />
-          Comp Bands
-        </Link>
-        <Link href="/offers" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors">
-          <FileText className="h-5 w-5" />
-          Offers
-        </Link>
-      </nav>
+
+      {/* Navigation */}
+      <div className="flex-1 overflow-y-auto py-6 px-4 space-y-8">
+        <nav className="space-y-1">
+          {navItems.map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all group ${
+                  active 
+                    ? 'bg-blue-50 text-blue-600 font-bold' 
+                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                }`}
+              >
+                <item.icon className={`h-5 w-5 shrink-0 ${active ? 'text-blue-600' : 'group-hover:text-blue-600'}`} />
+                {!isCollapsed && <span className="text-sm">{item.name}</span>}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div>
+          {!isCollapsed && <h4 className="px-3 mb-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">Personal</h4>}
+          <nav className="space-y-1">
+            {secondaryItems.map((item) => {
+              const active = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all group ${
+                    active 
+                      ? 'bg-blue-50 text-blue-600 font-bold' 
+                      : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                  }`}
+                >
+                  <item.icon className={`h-5 w-5 shrink-0 ${active ? 'text-blue-600' : 'group-hover:text-blue-600'}`} />
+                  {!isCollapsed && <span className="text-sm">{item.name}</span>}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      </div>
+
+      {/* Collapse Toggle */}
+      <button 
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        className="h-12 border-t border-gray-50 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors"
+      >
+        <ChevronLeft className={`h-5 w-5 transition-transform ${isCollapsed ? 'rotate-180' : ''}`} />
+      </button>
     </aside>
   );
 }
