@@ -137,10 +137,10 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const company = searchParams.get("company");
     const role = searchParams.get("role");
-    const levelRank = searchParams.get("levelRank");
+    const level = searchParams.get("level");
+    const location = searchParams.get("location");
     const page = parseInt(searchParams.get("page") || "1");
     const pageSize = parseInt(searchParams.get("pageSize") || "20");
-
     const skip = (page - 1) * pageSize;
 
     const [entries, total] = await Promise.all([
@@ -148,7 +148,8 @@ export async function GET(req: Request) {
         where: {
           ...(company && { company: { name: { contains: company, mode: 'insensitive' } } }),
           ...(role && { roleFamily: { name: { contains: role, mode: 'insensitive' } } }),
-          ...(levelRank && { level: { normalizedLevelRank: parseInt(levelRank) } }),
+          ...(level && { level: { name: { equals: level, mode: 'insensitive' } } }),
+          ...(location && { location: { city: { equals: location, mode: 'insensitive' } } }),
         },
         include: {
           company: true,
@@ -164,13 +165,15 @@ export async function GET(req: Request) {
         where: {
           ...(company && { company: { name: { contains: company, mode: 'insensitive' } } }),
           ...(role && { roleFamily: { name: { contains: role, mode: 'insensitive' } } }),
-          ...(levelRank && { level: { normalizedLevelRank: parseInt(levelRank) } }),
+          ...(level && { level: { name: { equals: level, mode: 'insensitive' } } }),
+          ...(location && { location: { city: { equals: location, mode: 'insensitive' } } }),
         },
       })
     ]);
 
     return NextResponse.json({
       entries,
+      isDemoData: false,
       pagination: {
         total,
         page,

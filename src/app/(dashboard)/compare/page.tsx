@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Building2, 
   Target, 
@@ -38,6 +39,15 @@ export default function ComparePage() {
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [selectedLevels, setSelectedLevels] = useState<Record<string, string>>({});
   const [showResults, setShowResults] = useState(false);
+
+  const stepsList = [
+    { num: 1, label: 'Select Companies' },
+    { num: 2, label: 'Select Levels' },
+    { num: 3, label: 'Select Locations' },
+    { num: 4, label: 'Generate Comparison' }
+  ];
+
+  const progressPercentage = Math.round(((step - 1) / 3) * 100);
 
   // Mock Options
   const companies = [
@@ -88,13 +98,13 @@ export default function ComparePage() {
               <button onClick={() => setShowResults(false)} className="text-xs font-black text-blue-600 uppercase tracking-widest mb-2 flex items-center gap-1">
                  <ArrowRight className="h-3 w-3 rotate-180" /> Back to Builder
               </button>
-              <h1 className="text-3xl font-black text-gray-900 tracking-tight">Compensation Analysis</h1>
+              <h1 className="text-3xl font-black text-white tracking-tight">Compensation Analysis</h1>
            </div>
            <div className="flex items-center gap-3">
-              <button className="h-10 px-4 bg-white border border-gray-100 rounded-xl text-xs font-black uppercase tracking-widest text-gray-700 flex items-center gap-2">
+              <button className="h-10 px-4 bg-card border border-border rounded-xl text-xs font-black uppercase tracking-widest text-gray-700 flex items-center gap-2">
                  <Download className="h-4 w-4" /> Export Report
               </button>
-              <button className="h-10 px-5 bg-gray-900 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg flex items-center gap-2">
+              <button className="h-10 px-5 bg-[#1F2937] text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg flex items-center gap-2">
                  <Plus className="h-4 w-4" /> Save Comparison
               </button>
            </div>
@@ -107,12 +117,12 @@ export default function ComparePage() {
               const lvl = selectedLevels[coId] || 'L5';
               const total = coId === 'amazon' ? 410000 : coId === 'meta' ? 375000 : 345000;
               return (
-                <Card key={coId} className={`p-8 border-none shadow-sm relative overflow-hidden ${i === 1 ? 'bg-blue-50/20' : 'bg-white'}`}>
+                <Card key={coId} className={`p-8 border-none shadow-sm relative overflow-hidden ${i === 1 ? 'bg-blue-50/20' : 'bg-card'}`}>
                    <div className="flex items-center justify-between mb-8">
                       <div className="flex items-center gap-3">
-                         <div className="h-10 w-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center font-black text-gray-900 shadow-sm">{co.logo}</div>
+                         <div className="h-10 w-10 rounded-xl bg-card border border-border flex items-center justify-center font-black text-white shadow-sm">{co.logo}</div>
                          <div>
-                            <h3 className="font-black text-gray-900">{co.name}</h3>
+                            <h3 className="font-black text-white">{co.name}</h3>
                             <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">{lvl} Package</span>
                          </div>
                       </div>
@@ -122,21 +132,21 @@ export default function ComparePage() {
                    <div className="space-y-6">
                       <div>
                          <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Total Compensation</span>
-                         <div className="text-3xl font-black text-gray-900">{formatCurrency(total)}</div>
+                         <div className="text-3xl font-black text-white">{formatCurrency(total)}</div>
                       </div>
 
-                      <div className="space-y-3 pt-4 border-t border-gray-50">
+                      <div className="space-y-3 pt-4 border-t border-border">
                          <div className="flex justify-between text-xs font-bold">
-                            <span className="text-gray-500 uppercase tracking-widest">Base Salary</span>
-                            <span className="text-gray-900">{formatCurrency(total * 0.5)}</span>
+                            <span className="text-slate-500 uppercase tracking-widest">Base Salary</span>
+                            <span className="text-white">{formatCurrency(total * 0.5)}</span>
                          </div>
                          <div className="flex justify-between text-xs font-bold">
-                            <span className="text-gray-500 uppercase tracking-widest">Annual Bonus</span>
-                            <span className="text-gray-900">{formatCurrency(total * 0.1)}</span>
+                            <span className="text-slate-500 uppercase tracking-widest">Annual Bonus</span>
+                            <span className="text-white">{formatCurrency(total * 0.1)}</span>
                          </div>
                          <div className="flex justify-between text-xs font-bold">
-                            <span className="text-gray-500 uppercase tracking-widest">Stock (RSUs)</span>
-                            <span className="text-gray-900">{formatCurrency(total * 0.4)}</span>
+                            <span className="text-slate-500 uppercase tracking-widest">Stock (RSUs)</span>
+                            <span className="text-white">{formatCurrency(total * 0.4)}</span>
                          </div>
                       </div>
                    </div>
@@ -147,9 +157,9 @@ export default function ComparePage() {
 
         {/* Visualization Area */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-           <Card className="lg:col-span-8 p-8 border-none shadow-sm bg-white">
+           <Card className="lg:col-span-8 p-8 border-none shadow-sm bg-card">
               <div className="flex items-center justify-between mb-10">
-                 <h3 className="text-xl font-black text-gray-900">Package Composition</h3>
+                 <h3 className="text-xl font-black text-white">Package Composition</h3>
                  <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-blue-600" /><span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Base</span></div>
                     <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-emerald-500" /><span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Bonus</span></div>
@@ -173,7 +183,7 @@ export default function ComparePage() {
 
            <div className="lg:col-span-4 space-y-6">
               {/* AI Insights Panel */}
-              <Card className="p-6 border-none shadow-sm bg-gray-900 text-white relative overflow-hidden">
+              <Card className="p-6 border-none shadow-sm bg-[#1F2937] text-white relative overflow-hidden">
                  <div className="flex items-center gap-2 mb-6">
                     <BrainCircuit className="h-5 w-5 text-blue-400" />
                     <h3 className="text-xs font-black uppercase tracking-widest text-blue-400">AI Intelligence</h3>
@@ -198,12 +208,12 @@ export default function ComparePage() {
                  <Zap className="absolute -bottom-6 -right-6 h-32 w-32 text-white/5" />
               </Card>
 
-              <Card className="p-6 border-none shadow-sm bg-white">
+              <Card className="p-6 border-none shadow-sm bg-card">
                  <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Negotiation Tip</h3>
-                 <p className="text-sm font-bold text-gray-900 leading-relaxed mb-6">
+                 <p className="text-sm font-bold text-white leading-relaxed mb-6">
                     Use the Amazon SDE3 offer to pressure Google for a higher Sign-on Bonus or L5-Top Tier equity refreshers.
                  </p>
-                 <button className="w-full py-3 border border-gray-100 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-600 hover:bg-gray-50 transition-all">
+                 <button className="w-full py-3 border border-border rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:bg-[#172033] transition-all">
                     View Negotiation Guide
                  </button>
               </Card>
@@ -216,27 +226,75 @@ export default function ComparePage() {
   return (
     <div className="max-w-4xl mx-auto space-y-12 pb-20">
       <div className="text-center">
-        <h1 className="text-4xl font-black text-gray-900 tracking-tight mb-4">Comparison Builder</h1>
-        <p className="text-gray-500 text-lg font-medium">Select target benchmarks to generate side-by-side compensation intelligence.</p>
+        <h1 className="text-4xl font-black text-white tracking-tight mb-4">Comparison Builder</h1>
+        <p className="text-slate-500 text-lg font-medium">Select target benchmarks to generate side-by-side compensation intelligence.</p>
       </div>
 
-      {/* Progress Steps */}
-      <div className="flex items-center justify-between relative px-10">
-         <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -translate-y-1/2 -z-10" />
-         {[1, 2, 3, 4].map((s) => (
-           <div key={s} className={`h-10 w-10 rounded-full flex items-center justify-center font-black text-sm transition-all border-4 ${
-             step >= s ? 'bg-blue-600 text-white border-blue-100 shadow-lg' : 'bg-white text-gray-300 border-gray-50'
-           }`}>
-             {step > s ? <Check className="h-5 w-5" strokeWidth={3} /> : s}
-           </div>
-         ))}
+      {/* Animated Progress Stepper */}
+      <div className="w-full max-w-3xl mx-auto space-y-12 px-4">
+         <div className="flex items-center justify-between">
+            <span className="text-sm font-black text-white">Step {step} of 4</span>
+            <span className="text-xs font-bold text-blue-400">{progressPercentage}% Complete</span>
+         </div>
+         
+         <div className="relative flex items-center justify-between pb-8">
+            {stepsList.map((s) => {
+               const isCompleted = step > s.num;
+               const isActive = step === s.num;
+               
+               return (
+                  <div key={s.num} className="relative flex flex-col items-center group z-10">
+                     <motion.div
+                        className={`h-10 w-10 rounded-full flex items-center justify-center font-black text-sm transition-colors border-2 shadow-sm ${
+                           isCompleted ? 'bg-blue-600 text-white border-blue-600' :
+                           isActive ? 'bg-blue-600 text-white border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.5)]' :
+                           'bg-[#1E293B] text-slate-500 border-[#334155]'
+                        }`}
+                        animate={{ scale: isActive ? 1.15 : 1 }}
+                        transition={{ duration: 0.3 }}
+                        whileHover={{ scale: 1.05 }}
+                     >
+                        {isCompleted ? (
+                           <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                           >
+                              <Check className="h-5 w-5" strokeWidth={3} />
+                           </motion.div>
+                        ) : (
+                           s.num
+                        )}
+                     </motion.div>
+                     <span className={`absolute top-14 w-32 text-center text-[10px] font-black uppercase tracking-widest transition-colors ${
+                        isActive ? 'text-blue-400' : isCompleted ? 'text-white' : 'text-slate-600'
+                     }`}>
+                        {s.label}
+                     </span>
+                  </div>
+               );
+            })}
+
+            {/* Background Track */}
+            <div className="absolute top-5 left-5 right-5 h-[2px] bg-[#334155] -z-10" />
+            
+            {/* Animated Fill Track */}
+            <div className="absolute top-5 left-5 right-5 h-[2px] -z-10 flex">
+               <motion.div 
+                  className="h-full bg-blue-600 rounded-full"
+                  initial={{ width: '0%' }}
+                  animate={{ width: `${progressPercentage}%` }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+               />
+            </div>
+         </div>
       </div>
 
-      <Card className="p-10 border-none shadow-premium bg-white min-h-[400px] flex flex-col">
+      <Card className="p-10 border-none shadow-premium bg-card min-h-[400px] flex flex-col">
          {step === 1 && (
            <div className="space-y-8 animate-fade-up">
               <div>
-                 <h2 className="text-2xl font-black text-gray-900 mb-2">Step 1: Select Companies</h2>
+                 <h2 className="text-2xl font-black text-white mb-2">Step 1: Select Companies</h2>
                  <p className="text-sm text-gray-400 font-bold uppercase tracking-widest">Choose up to 3 organizations to compare</p>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -245,15 +303,15 @@ export default function ComparePage() {
                     key={co.id}
                     onClick={() => toggleCompany(co.id)}
                     className={`p-6 rounded-3xl border-2 transition-all flex flex-col items-center gap-3 group ${
-                      selectedCompanies.includes(co.id) ? 'border-blue-600 bg-blue-50/50 shadow-md' : 'border-gray-50 hover:border-blue-200'
+                      selectedCompanies.includes(co.id) ? 'border-blue-600 bg-[#1E3A8A]/20 shadow-md' : 'border-border hover:border-blue-200'
                     }`}
                    >
                      <div className={`h-12 w-12 rounded-2xl flex items-center justify-center font-black text-xl shadow-sm ${
-                       selectedCompanies.includes(co.id) ? 'bg-blue-600 text-white' : 'bg-gray-50 text-gray-900 group-hover:scale-110'
+                       selectedCompanies.includes(co.id) ? 'bg-blue-600 text-white' : 'bg-[#0B1020] text-white group-hover:scale-110'
                      }`}>
                        {co.logo}
                      </div>
-                     <span className={`font-bold text-sm ${selectedCompanies.includes(co.id) ? 'text-blue-900' : 'text-gray-500'}`}>{co.name}</span>
+                     <span className={`font-bold text-sm ${selectedCompanies.includes(co.id) ? 'text-blue-900' : 'text-slate-500'}`}>{co.name}</span>
                    </button>
                  ))}
               </div>
@@ -263,13 +321,13 @@ export default function ComparePage() {
          {step === 2 && (
            <div className="space-y-8 animate-fade-up">
               <div>
-                 <h2 className="text-2xl font-black text-gray-900 mb-2">Step 2: Define Levels</h2>
+                 <h2 className="text-2xl font-black text-white mb-2">Step 2: Define Levels</h2>
                  <p className="text-sm text-gray-400 font-bold uppercase tracking-widest">Match equivalent internal levels for accuracy</p>
               </div>
               <div className="space-y-6">
                  {selectedCompanies.map((coId) => (
-                   <div key={coId} className="flex items-center gap-6 p-4 bg-gray-50 rounded-2xl">
-                      <div className="h-10 w-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center font-black text-gray-900 shadow-sm shrink-0">
+                   <div key={coId} className="flex items-center gap-6 p-4 bg-[#0B1020] rounded-2xl">
+                      <div className="h-10 w-10 rounded-xl bg-card border border-border flex items-center justify-center font-black text-white shadow-sm shrink-0">
                          {companies.find(c => c.id === coId)?.logo}
                       </div>
                       <div className="flex-1">
@@ -280,7 +338,7 @@ export default function ComparePage() {
                                 key={lvl}
                                 onClick={() => setLevel(coId, lvl)}
                                 className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                                  selectedLevels[coId] === lvl ? 'bg-blue-600 text-white shadow-md' : 'bg-white border border-gray-100 text-gray-600 hover:bg-gray-50'
+                                  selectedLevels[coId] === lvl ? 'bg-blue-600 text-white shadow-md' : 'bg-card border border-border text-slate-400 hover:bg-[#172033]'
                                 }`}
                               >
                                 {lvl}
@@ -297,12 +355,12 @@ export default function ComparePage() {
          {step === 3 && (
             <div className="space-y-8 animate-fade-up">
                <div>
-                  <h2 className="text-2xl font-black text-gray-900 mb-2">Step 3: Select Location</h2>
+                  <h2 className="text-2xl font-black text-white mb-2">Step 3: Select Location</h2>
                   <p className="text-sm text-gray-400 font-bold uppercase tracking-widest">Localize benchmarks and adjustments</p>
                </div>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {['San Francisco, CA', 'New York, NY', 'Seattle, WA', 'London, UK', 'Bangalore, IN', 'Berlin, DE'].map((loc) => (
-                    <button key={loc} className="p-4 bg-gray-50 border border-gray-100 rounded-2xl flex items-center gap-3 hover:bg-blue-50 hover:border-blue-200 transition-all text-sm font-bold text-gray-700">
+                    <button key={loc} className="p-4 bg-[#0B1020] border border-border rounded-2xl flex items-center gap-3 hover:bg-[#1E3A8A]/50 hover:border-blue-200 transition-all text-sm font-bold text-gray-700">
                        <MapPin className="h-4 w-4 text-gray-400" />
                        {loc}
                     </button>
@@ -317,12 +375,12 @@ export default function ComparePage() {
                   <Scale className="h-10 w-10" />
                </div>
                <div>
-                  <h2 className="text-3xl font-black text-gray-900 mb-2">Ready to Compare</h2>
-                  <p className="text-sm text-gray-500 font-medium max-w-sm mx-auto">We've gathered data for {selectedCompanies.length} companies across {Object.keys(selectedLevels).length} specified levels.</p>
+                  <h2 className="text-3xl font-black text-white mb-2">Ready to Compare</h2>
+                  <p className="text-sm text-slate-500 font-medium max-w-sm mx-auto">We've gathered data for {selectedCompanies.length} companies across {Object.keys(selectedLevels).length} specified levels.</p>
                </div>
                <div className="flex flex-wrap justify-center gap-3">
                   {selectedCompanies.map(id => (
-                    <div key={id} className="px-3 py-1.5 bg-gray-100 rounded-lg text-[10px] font-black text-gray-600 uppercase tracking-widest">
+                    <div key={id} className="px-3 py-1.5 bg-[#111827] rounded-lg text-[10px] font-black text-slate-400 uppercase tracking-widest">
                        {companies.find(c => c.id === id)?.name} {selectedLevels[id]}
                     </div>
                   ))}
@@ -330,10 +388,10 @@ export default function ComparePage() {
             </div>
          )}
 
-         <div className="mt-auto pt-10 flex items-center justify-between border-t border-gray-50">
+         <div className="mt-auto pt-10 flex items-center justify-between border-t border-border">
             <button 
                onClick={() => step > 1 && setStep(step - 1)}
-               className={`text-xs font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 transition-colors ${step === 1 ? 'opacity-0' : ''}`}
+               className={`text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors ${step === 1 ? 'opacity-0' : ''}`}
             >
                Previous
             </button>

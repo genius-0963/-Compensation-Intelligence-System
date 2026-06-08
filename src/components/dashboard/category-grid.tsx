@@ -32,17 +32,17 @@ export function CategoryGrid() {
     <div className="py-12">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Explore Stack</h2>
-          <p className="text-sm text-gray-500 mt-1">Select a category to view specialized templates and projects.</p>
+          <h2 className="text-2xl font-bold text-foreground">Explore Stack</h2>
+          <p className="text-sm text-muted-foreground mt-1">Select a category to view specialized templates and projects.</p>
         </div>
-        <button className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors">View All Categories →</button>
+        <button className="text-sm font-bold text-primary hover:text-primary/80 transition-colors">View All Categories →</button>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
         {categories.map((cat, i) => (
           <div 
             key={i}
-            className="group relative bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-premium transition-all hover:-translate-y-1 cursor-pointer overflow-hidden"
+            className="group relative bg-card border border-border rounded-3xl p-6 shadow-sm hover:shadow-premium transition-all hover:-translate-y-1 cursor-pointer overflow-hidden"
           >
             {/* Hover Gradient Background */}
             <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-0 group-hover:opacity-[0.03] transition-opacity`} />
@@ -51,11 +51,11 @@ export function CategoryGrid() {
               <cat.icon className="h-6 w-6" />
             </div>
             
-            <h3 className="font-bold text-gray-900 mb-1">{cat.name}</h3>
-            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{cat.stats}</p>
+            <h3 className="font-bold text-foreground mb-1">{cat.name}</h3>
+            <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">{cat.stats}</p>
             
             {/* Subtle corner ornament */}
-            <div className="absolute -bottom-2 -right-2 w-12 h-12 border-2 border-gray-50 rounded-full group-hover:scale-150 transition-transform duration-500" />
+            <div className="absolute -bottom-2 -right-2 w-12 h-12 border-2 border-border rounded-full group-hover:scale-150 transition-transform duration-500" />
           </div>
         ))}
       </div>

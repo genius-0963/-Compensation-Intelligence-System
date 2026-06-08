@@ -16,7 +16,7 @@ export default async function AdminReviewQueue() {
           <Card key={s.id} className="p-6 flex items-center justify-between">
             <div>
               <p className="font-bold">{s.company.name}</p>
-              <p className="text-sm text-gray-500">Submitted by: {s.user.email}</p>
+              <p className="text-sm text-slate-500">Submitted by: {s.user.email}</p>
             </div>
             <div className="flex gap-2">
                <Button variant="outline">Reject</Button>

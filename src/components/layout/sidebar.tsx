@@ -19,7 +19,8 @@ import {
   Plus,
   Bell,
   User,
-  Zap
+  Zap,
+  Sparkles
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -28,6 +29,7 @@ export default function Sidebar() {
 
   const navItems = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'AI Advisor', href: '/advisor', icon: Sparkles },
     { name: 'Salary Explorer', href: '/explorer', icon: BarChart3 },
     { name: 'Companies', href: '/companies', icon: Building2 },
     { name: 'Analytics', href: '/analytics', icon: TrendingUp },
@@ -43,15 +45,15 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className={`bg-white border-r border-gray-100 flex flex-col transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'}`}>
+    <aside className={`bg-card border-r border-border flex flex-col transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'}`}>
       {/* Logo Section */}
-      <div className="h-16 flex items-center px-6 border-b border-gray-50">
+      <div className="h-16 flex items-center px-6 border-b border-border">
         <Link href="/dashboard" className="flex items-center gap-3 group">
           <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform shrink-0">
             CI
           </div>
           {!isCollapsed && (
-            <span className="text-lg font-bold tracking-tight text-gray-900 truncate">CompIntel</span>
+            <span className="text-lg font-bold tracking-tight text-foreground truncate">CompIntel</span>
           )}
         </Link>
       </div>
@@ -67,11 +69,11 @@ export default function Sidebar() {
                 href={item.href}
                 className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all group ${
                   active 
-                    ? 'bg-blue-50 text-blue-600 font-bold' 
-                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'bg-secondary text-secondary-foreground font-medium' 
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
-                <item.icon className={`h-5 w-5 shrink-0 ${active ? 'text-blue-600' : 'group-hover:text-blue-600'}`} />
+                <item.icon className={`h-5 w-5 shrink-0 ${active ? 'text-foreground' : 'group-hover:text-foreground'}`} />
                 {!isCollapsed && <span className="text-sm">{item.name}</span>}
               </Link>
             );
@@ -79,7 +81,7 @@ export default function Sidebar() {
         </nav>
 
         <div>
-          {!isCollapsed && <h4 className="px-3 mb-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">Personal</h4>}
+          {!isCollapsed && <h4 className="px-3 mb-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Personal</h4>}
           <nav className="space-y-1">
             {secondaryItems.map((item) => {
               const active = pathname === item.href;
@@ -89,11 +91,11 @@ export default function Sidebar() {
                   href={item.href}
                   className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all group ${
                     active 
-                      ? 'bg-blue-50 text-blue-600 font-bold' 
-                      : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-secondary text-secondary-foreground font-medium' 
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                   }`}
                 >
-                  <item.icon className={`h-5 w-5 shrink-0 ${active ? 'text-blue-600' : 'group-hover:text-blue-600'}`} />
+                  <item.icon className={`h-5 w-5 shrink-0 ${active ? 'text-foreground' : 'group-hover:text-foreground'}`} />
                   {!isCollapsed && <span className="text-sm">{item.name}</span>}
                 </Link>
               );
@@ -105,7 +107,7 @@ export default function Sidebar() {
       {/* Collapse Toggle */}
       <button 
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="h-12 border-t border-gray-50 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors"
+        className="h-12 border-t border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
       >
         <ChevronLeft className={`h-5 w-5 transition-transform ${isCollapsed ? 'rotate-180' : ''}`} />
       </button>

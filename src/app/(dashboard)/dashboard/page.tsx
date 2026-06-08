@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import useSWR from 'swr';
 import { 
   DollarSign, 
   Users, 
@@ -25,32 +26,32 @@ import {
 } from 'recharts';
 import { formatCurrency } from "@/lib/utils";
 import Link from 'next/link';
+import { useAppTheme } from '@/hooks/use-app-theme';
+import { getChartTheme } from '@/lib/chart-theme';
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function DashboardPage() {
-  // Mock KPIs based on spec
+  const { resolvedTheme } = useAppTheme();
+  const ct = getChartTheme(resolvedTheme);
+
+  // Fetch real dataset data
+  const { data: globalStats, isLoading: loadingGlobal } = useSWR('/api/stats/global', fetcher);
+  const { data: companiesStats, isLoading: loadingCompanies } = useSWR('/api/stats/companies', fetcher);
+  const { data: levelStats, isLoading: loadingLevels } = useSWR('/api/stats/levels', fetcher);
+
+  // Dynamic KPIs
   const kpis = [
-    { title: 'Median Compensation', value: '$248,000', trend: '+12%', icon: DollarSign, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { title: 'Average Compensation', value: '$215,400', trend: '+8%', icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { title: 'Highest Paying Co.', value: 'OpenAI', trend: 'Rank 1', icon: Building2, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { title: 'Highest Paying Level', value: 'Google L8', trend: 'Principal+', icon: Layers, color: 'text-violet-600', bg: 'bg-violet-50' },
-    { title: 'Verified Entries', value: '42,850', trend: '94%', icon: CheckCircle2, color: 'text-amber-600', bg: 'bg-amber-50' },
-    { title: 'Companies Tracked', value: '1,240', trend: '+15', icon: Users, color: 'text-rose-600', bg: 'bg-rose-50' },
+    { title: 'Median Compensation', value: globalStats ? formatCurrency(globalStats.data.medianCompensation) : '...', trend: 'Market', icon: DollarSign, color: 'text-blue-600 ', bg: 'bg-blue-50 dark:bg-blue-950/30' },
+    { title: 'Average Compensation', value: globalStats ? formatCurrency(globalStats.data.averageCompensation) : '...', trend: 'Mean', icon: TrendingUp, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/30' },
+    { title: 'Highest Paying Co.', value: companiesStats && companiesStats.data.length > 0 ? companiesStats.data[0].name : '...', trend: 'Rank 1', icon: Building2, color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-950/30' },
+    { title: 'Highest Paying Level', value: levelStats && levelStats.data.length > 0 ? `${levelStats.data[0].companyName} ${levelStats.data[0].levelName}` : '...', trend: 'Rank 1', icon: Layers, color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-950/30' },
+    { title: 'Verified Entries', value: globalStats ? globalStats.data.totalRecords.toLocaleString() : '...', trend: 'Data Points', icon: CheckCircle2, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-950/30' },
+    { title: 'Companies Tracked', value: globalStats ? globalStats.data.uniqueCompanies.toLocaleString() : '...', trend: 'Global', icon: Users, color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-50 dark:bg-rose-950/30' },
   ];
 
-  const topCompanies = [
-    { name: 'Google', median: 320000, trend: '+4.2%', logo: 'G' },
-    { name: 'Meta', median: 315000, trend: '+3.8%', logo: 'M' },
-    { name: 'Amazon', median: 295000, trend: '+2.1%', logo: 'A' },
-    { name: 'Apple', median: 285000, trend: '+1.5%', logo: 'A' },
-    { name: 'Netflix', median: 450000, trend: '+5.0%', logo: 'N' },
-  ];
-
-  const topLevels = [
-    { level: 'L7 Staff Software Engineer', company: 'Google', median: 680000 },
-    { level: 'E7 Software Engineer', company: 'Meta', median: 675000 },
-    { level: 'L7 Principal SDE', company: 'Amazon', median: 640000 },
-    { level: 'ICT6 Software Engineer', company: 'Apple', median: 620000 },
-  ];
+  const topCompanies = companiesStats?.data?.slice(0, 5) || [];
+  const topLevels = levelStats?.data?.slice(0, 4) || [];
 
   const distributionData = [
     { range: '50-100k', count: 120 },
@@ -68,14 +69,14 @@ export default function DashboardPage() {
       {/* Hero Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-black text-gray-900 tracking-tight">Compensation Intelligence</h1>
-          <p className="text-gray-500 mt-2 text-lg">Compare compensation across companies, levels, locations, and roles.</p>
+          <h1 className="text-4xl font-black text-foreground tracking-tight transition-colors">Compensation Intelligence</h1>
+          <p className="text-muted-foreground mt-2 text-lg transition-colors">Compare real dataset compensation across companies, levels, locations, and roles.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Link href="/explorer" className="px-6 py-3 bg-white border border-gray-100 rounded-2xl text-sm font-bold text-gray-700 hover:bg-gray-50 transition-all shadow-sm">
+          <Link href="/explorer" className="px-6 py-3 bg-card border border-border rounded-2xl text-sm font-bold text-foreground hover:bg-muted transition-all shadow-sm">
             Explore Salaries
           </Link>
-          <Link href="/compare" className="px-6 py-3 bg-blue-600 text-white rounded-2xl text-sm font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2">
+          <Link href="/compare" className="px-6 py-3 bg-primary text-primary-foreground rounded-2xl text-sm font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2">
             Compare Compensation
             <ArrowRight className="h-4 w-4" />
           </Link>
@@ -85,14 +86,16 @@ export default function DashboardPage() {
       {/* KPI Cards Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-5">
         {kpis.map((kpi, i) => (
-          <Card key={i} className="p-5 border-none shadow-sm hover:shadow-md transition-shadow group">
+          <Card key={i} className="p-5 border-none shadow-sm hover:shadow-md transition-shadow group bg-card">
             <div className={`h-10 w-10 rounded-xl ${kpi.bg} ${kpi.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
               <kpi.icon className="h-5 w-5" />
             </div>
-            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{kpi.title}</h3>
-            <div className="text-xl font-black text-gray-900 mb-2">{kpi.value}</div>
+            <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1 transition-colors">{kpi.title}</h3>
+            <div className="text-xl font-black text-foreground mb-2 transition-colors">
+              {loadingGlobal || loadingCompanies || loadingLevels ? '...' : kpi.value}
+            </div>
             <div className="flex items-center gap-1">
-              <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${kpi.trend.startsWith('+') || kpi.trend.startsWith('↑') ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600'}`}>
+              <span className={`text-[10px] font-black px-1.5 py-0.5 rounded transition-colors ${kpi.trend.startsWith('+') || kpi.trend.startsWith('↑') ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400' : 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 '}`}>
                 {kpi.trend}
               </span>
             </div>
@@ -103,164 +106,108 @@ export default function DashboardPage() {
       {/* Compensation Insights Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Top Paying Companies */}
-        <Card className="p-8 border-none shadow-sm">
+        <Card className="p-8 border-none shadow-sm bg-card">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-xl font-black text-gray-900">Top Paying Companies</h3>
-            <button className="h-8 w-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-50 transition-colors">
+            <h3 className="text-xl font-black text-foreground transition-colors">Top Paying Companies</h3>
+            <button className="h-8 w-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors cursor-pointer">
               <MoreHorizontal className="h-5 w-5" />
             </button>
           </div>
           <div className="space-y-5">
-            {topCompanies.map((co, i) => (
+            {loadingCompanies ? (
+              <p className="text-muted-foreground text-sm font-medium">Loading dataset aggregations...</p>
+            ) : topCompanies.map((co: any, i: number) => (
               <div key={i} className="flex items-center justify-between group">
                 <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-900 font-bold shadow-sm">
-                    {co.logo}
+                  <div className="h-10 w-10 rounded-xl bg-muted border border-border flex items-center justify-center text-foreground font-bold shadow-sm transition-colors">
+                    {co.name.charAt(0)}
                   </div>
                   <div>
-                    <div className="font-bold text-gray-900">{co.name}</div>
-                    <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Tier 1 Technology</div>
+                    <div className="font-bold text-foreground transition-colors">{co.name}</div>
+                    <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider transition-colors">{co.recordCount} Records</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-6">
                   <div className="text-right">
-                    <div className="font-black text-gray-900">{formatCurrency(co.median)}</div>
-                    <div className="text-[10px] text-emerald-500 font-black uppercase tracking-wider text-right">{co.trend}</div>
+                    <div className="font-black text-foreground transition-colors">{formatCurrency(co.medianCompensation)}</div>
+                    <div className="text-[10px] text-emerald-500 font-black uppercase tracking-wider text-right">Median TC</div>
                   </div>
-                  <div className="h-8 w-24 bg-gray-50 rounded-lg overflow-hidden hidden md:block">
-                     <div className="h-full bg-blue-500/20" style={{ width: `${(co.median / 450000) * 100}%` }} />
+                  <div className="h-8 w-24 bg-muted rounded-lg overflow-hidden hidden md:block transition-colors">
+                     <div className="h-full bg-blue-500/20" style={{ width: `${(co.medianCompensation / (topCompanies[0]?.medianCompensation || 400000)) * 100}%` }} />
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          <button className="w-full mt-8 py-3 bg-gray-50 text-gray-900 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-gray-100 transition-colors">
+          <button className="w-full mt-8 py-3 bg-muted text-foreground rounded-xl text-xs font-black uppercase tracking-wider hover:bg-muted/80 transition-colors cursor-pointer">
             View All Companies
           </button>
         </Card>
 
         {/* Top Paying Levels */}
-        <Card className="p-8 border-none shadow-sm">
+        <Card className="p-8 border-none shadow-sm bg-card">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-xl font-black text-gray-900">Top Paying Levels</h3>
-            <button className="h-8 w-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-50 transition-colors">
+            <h3 className="text-xl font-black text-foreground transition-colors">Top Paying Levels</h3>
+            <button className="h-8 w-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors cursor-pointer">
               <Plus className="h-5 w-5" />
             </button>
           </div>
           <div className="space-y-4">
-            {topLevels.map((lvl, i) => (
-              <div key={i} className="p-4 bg-gray-50/50 rounded-2xl border border-transparent hover:border-blue-100 hover:bg-white transition-all cursor-pointer group">
+            {loadingLevels ? (
+              <p className="text-muted-foreground text-sm font-medium">Loading level comparisons...</p>
+            ) : topLevels.map((lvl: any, i: number) => (
+              <div key={i} className="p-4 bg-muted/50 rounded-2xl border border-transparent hover:border-primary/20 hover:bg-card transition-all cursor-pointer group">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{lvl.level}</h4>
-                    <p className="text-xs text-gray-500 font-medium">{lvl.company}</p>
+                    <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">{lvl.levelName}</h4>
+                    <p className="text-xs text-muted-foreground font-medium transition-colors">{lvl.companyName} ({lvl.recordCount} records)</p>
                   </div>
                   <div className="text-right">
-                    <div className="font-black text-gray-900 text-lg">{formatCurrency(lvl.median)}</div>
-                    <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Median TC</div>
+                    <div className="font-black text-foreground text-lg transition-colors">{formatCurrency(lvl.medianCompensation)}</div>
+                    <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest transition-colors">Median TC</div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          <button className="w-full mt-6 py-3 bg-gray-50 text-gray-900 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-gray-100 transition-colors">
+          <button className="w-full mt-6 py-3 bg-muted text-foreground rounded-xl text-xs font-black uppercase tracking-wider hover:bg-muted/80 transition-colors cursor-pointer">
             View Level Intelligence
           </button>
         </Card>
       </div>
 
       {/* Compensation Distribution Area */}
-      <Card className="p-8 border-none shadow-sm">
+      <Card className="p-8 border-none shadow-sm bg-card">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div>
-            <h3 className="text-2xl font-black text-gray-900">Compensation Distribution</h3>
-            <p className="text-sm text-gray-500 mt-1 font-medium">Interactive histogram showing industry-wide total compensation spread.</p>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            {['P50', 'P75', 'P90', 'P95'].map((p) => (
-              <div key={p} className="px-3 py-1.5 bg-gray-50 rounded-lg text-xs font-bold text-gray-600 border border-gray-100">
-                {p} <span className="text-blue-600 ml-1">$240k+</span>
-              </div>
-            ))}
+            <h3 className="text-2xl font-black text-foreground transition-colors">Compensation Distribution</h3>
+            <p className="text-sm text-muted-foreground mt-1 font-medium transition-colors">Interactive histogram showing industry-wide total compensation spread.</p>
           </div>
         </div>
 
         <div className="h-[400px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={distributionData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-              <XAxis dataKey="range" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#9ca3af', fontWeight: 700 }} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={ct.gridStroke} />
+              <XAxis dataKey="range" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: ct.tickColor, fontWeight: 700 }} />
               <YAxis hide />
               <Tooltip 
-                cursor={{ fill: '#f8fafc' }}
-                contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}
+                cursor={{ fill: ct.cursorFill }}
+                contentStyle={{ 
+                  borderRadius: '16px', 
+                  backgroundColor: ct.tooltipBg, 
+                  borderColor: ct.tooltipBorder, 
+                  color: ct.tooltipTextColor, 
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.06)' 
+                }}
               />
               <Bar dataKey="count" radius={[8, 8, 0, 0]}>
                 {distributionData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={index === 3 ? '#2563eb' : '#e5e7eb'} />
+                  <Cell key={`cell-${index}`} fill={index === 3 ? ct.primaryBlue : ct.inactiveBarColor} />
                 ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-        </div>
-
-        <div className="mt-8 pt-8 border-t border-gray-50 grid grid-cols-2 md:grid-cols-4 gap-8">
-           <div>
-              <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Median</div>
-              <div className="text-2xl font-black text-gray-900">$248,000</div>
-           </div>
-           <div>
-              <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">75th Percentile</div>
-              <div className="text-2xl font-black text-gray-900">$312,000</div>
-           </div>
-           <div>
-              <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">90th Percentile</div>
-              <div className="text-2xl font-black text-gray-900">$485,000</div>
-           </div>
-           <div>
-              <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">95th Percentile</div>
-              <div className="text-2xl font-black text-gray-900">$620,000+</div>
-           </div>
-        </div>
-      </Card>
-
-      {/* Compensation Breakdown Section */}
-      <Card className="p-8 border-none shadow-sm overflow-hidden">
-        <div className="mb-10">
-          <h3 className="text-2xl font-black text-gray-900">Compensation Breakdown</h3>
-          <p className="text-sm text-gray-500 mt-1 font-medium">Comparison of compensation structures across top-tier companies.</p>
-        </div>
-
-        <div className="space-y-12">
-           {[
-             { name: 'Google L5', base: 190000, bonus: 35000, stock: 120000, total: 345000 },
-             { name: 'Meta E5', base: 185000, bonus: 40000, stock: 150000, total: 375000 },
-             { name: 'Microsoft 63', base: 180000, bonus: 30000, stock: 80000, total: 290000 },
-             { name: 'Amazon SDE3', base: 165000, bonus: 25000, stock: 220000, total: 410000 },
-           ].map((item, i) => (
-             <div key={i}>
-                <div className="flex items-center justify-between mb-3">
-                   <div className="font-black text-gray-900">{item.name}</div>
-                   <div className="text-sm font-black text-gray-900">{formatCurrency(item.total)}</div>
-                </div>
-                <div className="h-4 w-full bg-gray-100 rounded-full flex overflow-hidden">
-                   <div className="h-full bg-blue-600" style={{ width: `${(item.base / item.total) * 100}%` }} />
-                   <div className="h-full bg-emerald-500" style={{ width: `${(item.bonus / item.total) * 100}%` }} />
-                   <div className="h-full bg-violet-600" style={{ width: `${(item.stock / item.total) * 100}%` }} />
-                </div>
-                <div className="flex gap-4 mt-2">
-                   <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                      <div className="h-2 w-2 rounded-full bg-blue-600" /> Base ({Math.round(item.base/item.total*100)}%)
-                   </div>
-                   <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                      <div className="h-2 w-2 rounded-full bg-emerald-500" /> Bonus ({Math.round(item.bonus/item.total*100)}%)
-                   </div>
-                   <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                      <div className="h-2 w-2 rounded-full bg-violet-600" /> Stock ({Math.round(item.stock/item.total*100)}%)
-                   </div>
-                </div>
-             </div>
-           ))}
         </div>
       </Card>
     </div>

@@ -28,7 +28,7 @@ export function Toast({ id, title, description, type = 'info', onClose }: ToastP
   }, [id, onClose]);
 
   return (
-    <div className="pointer-events-auto flex w-full max-w-md items-center justify-between space-x-4 rounded-lg border border-slate-800 bg-slate-900 p-4 shadow-lg animate-in slide-in-from-right-full">
+    <div className="pointer-events-auto flex w-full max-w-md items-center justify-between space-x-4 rounded-lg border border-slate-800 bg-[#0B1020] p-4 shadow-lg animate-in slide-in-from-right-full">
       <div className="flex items-start gap-3">
         {icons[type]}
         <div>

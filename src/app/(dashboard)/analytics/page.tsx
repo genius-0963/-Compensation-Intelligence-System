@@ -16,6 +16,7 @@ import {
   Globe
 } from 'lucide-react';
 import { Card } from "@/components/ui/card";
+import { Dropdown, DropdownItem } from "@/components/ui/dropdown";
 import { 
   LineChart, 
   Line, 
@@ -35,6 +36,7 @@ import { formatCurrency } from "@/lib/utils";
 
 export default function AnalyticsPage() {
   const [timePeriod, setTimePeriod] = useState('1Y');
+  const [filters, setFilters] = useState({ company: '', location: '', level: '' });
 
   // Mock data for Trends
   const trendData = [
@@ -65,39 +67,75 @@ export default function AnalyticsPage() {
   return (
     <div className="space-y-8 pb-20">
       {/* 1. Global Filters */}
-      <Card className="p-4 border-none shadow-sm bg-white sticky top-0 z-30 flex flex-wrap items-center gap-3">
+      <Card className="p-4 border-none shadow-sm bg-card sticky top-0 z-30 flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-2">
-           <button className="h-10 px-4 bg-gray-50 border border-gray-100 rounded-xl text-xs font-black uppercase tracking-widest text-gray-700 flex items-center gap-2 hover:bg-gray-100 transition-all">
-              <Filter className="h-3.5 w-3.5" />
-              Company
-              <ChevronDown className="h-3 w-3" />
-           </button>
-           <button className="h-10 px-4 bg-gray-50 border border-gray-100 rounded-xl text-xs font-black uppercase tracking-widest text-gray-700 flex items-center gap-2 hover:bg-gray-100 transition-all">
-              <Globe className="h-3.5 w-3.5" />
-              Location
-              <ChevronDown className="h-3 w-3" />
-           </button>
-           <button className="h-10 px-4 bg-gray-50 border border-gray-100 rounded-xl text-xs font-black uppercase tracking-widest text-gray-700 flex items-center gap-2 hover:bg-gray-100 transition-all">
-              <Target className="h-3.5 w-3.5" />
-              Level
-              <ChevronDown className="h-3 w-3" />
-           </button>
+           <Dropdown 
+             align="left"
+             trigger={
+               <button className={`h-10 px-4 border border-border rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-sm ${filters.company ? 'bg-primary/20 text-primary border-primary/50' : 'bg-muted text-foreground hover:bg-muted/80'}`}>
+                  <Filter className="h-3.5 w-3.5" />
+                  {filters.company || 'Company'}
+                  <ChevronDown className="h-3 w-3" />
+               </button>
+             }
+           >
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, company: '' }))}>Any Company</DropdownItem>
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, company: 'Google' }))}>Google</DropdownItem>
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, company: 'Meta' }))}>Meta</DropdownItem>
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, company: 'Amazon' }))}>Amazon</DropdownItem>
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, company: 'Apple' }))}>Apple</DropdownItem>
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, company: 'Microsoft' }))}>Microsoft</DropdownItem>
+           </Dropdown>
+
+           <Dropdown 
+             align="left"
+             trigger={
+               <button className={`h-10 px-4 border border-border rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-sm ${filters.location ? 'bg-primary/20 text-primary border-primary/50' : 'bg-muted text-foreground hover:bg-muted/80'}`}>
+                  <Globe className="h-3.5 w-3.5" />
+                  {filters.location === 'US' ? 'United States' : filters.location === 'GB' ? 'United Kingdom' : filters.location === 'CA' ? 'Canada' : filters.location === 'IN' ? 'India' : filters.location || 'Location'}
+                  <ChevronDown className="h-3 w-3" />
+               </button>
+             }
+           >
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, location: '' }))}>Any Location</DropdownItem>
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, location: 'US' }))}>United States</DropdownItem>
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, location: 'GB' }))}>United Kingdom</DropdownItem>
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, location: 'CA' }))}>Canada</DropdownItem>
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, location: 'IN' }))}>India</DropdownItem>
+           </Dropdown>
+
+           <Dropdown 
+             align="left"
+             trigger={
+               <button className={`h-10 px-4 border border-border rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-sm ${filters.level ? 'bg-primary/20 text-primary border-primary/50' : 'bg-muted text-foreground hover:bg-muted/80'}`}>
+                  <Target className="h-3.5 w-3.5" />
+                  {filters.level || 'Level'}
+                  <ChevronDown className="h-3 w-3" />
+               </button>
+             }
+           >
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, level: '' }))}>Any Level</DropdownItem>
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, level: 'Entry Level' }))}>Entry Level</DropdownItem>
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, level: 'Mid Level' }))}>Mid Level</DropdownItem>
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, level: 'Senior' }))}>Senior</DropdownItem>
+             <DropdownItem onClick={() => setFilters(f => ({ ...f, level: 'Executive' }))}>Executive</DropdownItem>
+           </Dropdown>
         </div>
-        <div className="h-6 w-px bg-gray-100 mx-1" />
-        <div className="flex items-center gap-1 p-1 bg-gray-50 rounded-xl border border-gray-100">
+        <div className="h-6 w-px bg-border mx-1" />
+        <div className="flex items-center gap-1 p-1 bg-muted rounded-xl border border-border">
            {['1M', '3M', '6M', '1Y', 'ALL'].map((p) => (
              <button 
               key={p} 
               onClick={() => setTimePeriod(p)}
-              className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all ${timePeriod === p ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+              className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all ${timePeriod === p ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
              >
                {p}
              </button>
            ))}
         </div>
         <div className="ml-auto flex items-center gap-2">
-           <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mr-2">Last Updated: 2m ago</span>
-           <button className="h-10 px-5 bg-blue-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg hover:bg-blue-700 transition-all flex items-center gap-2">
+           <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mr-2">Last Updated: 2m ago</span>
+           <button className="h-10 px-5 bg-primary text-primary-foreground rounded-xl text-xs font-black uppercase tracking-widest shadow-lg hover:bg-primary/90 transition-all flex items-center gap-2">
               <Calendar className="h-4 w-4" />
               Custom Range
            </button>
@@ -106,20 +144,20 @@ export default function AnalyticsPage() {
 
       {/* 2. Trends Section */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <Card className="lg:col-span-8 p-8 border-none shadow-sm bg-white">
+        <Card className="lg:col-span-8 p-8 border-none shadow-sm bg-card">
            <div className="flex items-center justify-between mb-10">
               <div>
-                 <h3 className="text-2xl font-black text-gray-900 tracking-tight">Compensation Trends</h3>
-                 <p className="text-sm text-gray-500 font-medium">Historical growth of Median TC across Tier 1 companies.</p>
+                 <h3 className="text-2xl font-black text-foreground tracking-tight">Compensation Trends</h3>
+                 <p className="text-sm text-muted-foreground font-medium">Historical growth of Median TC across Tier 1 companies.</p>
               </div>
               <div className="flex items-center gap-6">
                  <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-blue-600" />
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Google</span>
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Google</span>
                  </div>
                  <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-emerald-500" />
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Meta</span>
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Meta</span>
                  </div>
               </div>
            </div>
@@ -139,14 +177,14 @@ export default function AnalyticsPage() {
         </Card>
 
         {/* 3. Salary Heatmap Simulation */}
-        <Card className="lg:col-span-4 p-8 border-none shadow-sm bg-white overflow-hidden">
-           <h3 className="text-xl font-black text-gray-900 mb-6">Market Heatmap</h3>
+        <Card className="lg:col-span-4 p-8 border-none shadow-sm bg-card overflow-hidden">
+           <h3 className="text-xl font-black text-foreground mb-6">Market Heatmap</h3>
            <div className="space-y-4">
               {['Google', 'Meta', 'Netflix', 'Amazon', 'Apple'].map((co) => (
                 <div key={co} className="space-y-2">
                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-gray-700">{co}</span>
-                      <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">Hot</span>
+                      <span className="text-xs font-bold text-foreground">{co}</span>
+                      <span className="text-[10px] font-black text-primary bg-primary/10 px-1.5 py-0.5 rounded">Hot</span>
                    </div>
                    <div className="flex gap-1 h-8">
                       {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -163,23 +201,23 @@ export default function AnalyticsPage() {
                 </div>
               ))}
            </div>
-           <div className="mt-8 pt-6 border-t border-gray-50">
+           <div className="mt-8 pt-6 border-t border-border">
               <div className="flex items-center justify-between mb-4">
-                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Lower Pay</span>
+                 <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center">Lower Pay</span>
                  <div className="flex-1 h-1.5 mx-4 bg-gradient-to-r from-blue-100 via-blue-500 to-blue-900 rounded-full" />
-                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Higher Pay</span>
+                 <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center">Higher Pay</span>
               </div>
-              <p className="text-xs text-gray-400 font-medium leading-relaxed italic">Heatmap visualizes median compensation across standardized level ranks 1-10.</p>
+              <p className="text-xs text-muted-foreground font-medium leading-relaxed italic">Heatmap visualizes median compensation across standardized level ranks 1-10.</p>
            </div>
         </Card>
       </div>
 
       {/* 4. Promotion Growth Analysis */}
-      <Card className="p-8 border-none shadow-sm bg-white">
+      <Card className="p-8 border-none shadow-sm bg-card">
         <div className="flex items-center justify-between mb-10">
           <div>
-            <h3 className="text-2xl font-black text-gray-900 tracking-tight">Promotion Growth Analysis</h3>
-            <p className="text-sm text-gray-500 font-medium">Quantifying the financial impact of leveling up.</p>
+            <h3 className="text-2xl font-black text-foreground tracking-tight">Promotion Growth Analysis</h3>
+            <p className="text-sm text-muted-foreground font-medium">Quantifying the financial impact of leveling up.</p>
           </div>
           <div className="h-10 w-10 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center">
             <TrendingUp className="h-5 w-5" />
@@ -188,26 +226,26 @@ export default function AnalyticsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {promotionData.map((d, i) => (
-            <div key={i} className="p-6 bg-gray-50/50 rounded-[32px] border border-transparent hover:border-violet-100 hover:bg-white transition-all group">
-              <div className="text-lg font-black text-gray-900 mb-4">{d.level}</div>
+            <div key={i} className="p-6 bg-muted/50 rounded-[32px] border border-transparent hover:border-primary/20 hover:bg-card transition-all group">
+              <div className="text-lg font-black text-foreground mb-4">{d.level}</div>
               <div className="space-y-4">
                 <div>
-                   <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Median TC Increase</div>
+                   <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Median TC Increase</div>
                    <div className="text-2xl font-black text-violet-600">+{d.increase}%</div>
                 </div>
                 <div className="flex items-center gap-6">
                    <div>
-                      <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Stock Growth</div>
-                      <div className="text-sm font-black text-gray-700">+{d.stock}%</div>
+                      <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">Stock Growth</div>
+                      <div className="text-sm font-black text-foreground">+{d.stock}%</div>
                    </div>
-                   <div className="h-6 w-px bg-gray-200" />
+                   <div className="h-6 w-px bg-border" />
                    <div>
-                      <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Bonus Jump</div>
-                      <div className="text-sm font-black text-gray-700">+{d.bonus}%</div>
+                      <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">Bonus Jump</div>
+                      <div className="text-sm font-black text-foreground">+{d.bonus}%</div>
                    </div>
                 </div>
               </div>
-              <div className="mt-6 h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+              <div className="mt-6 h-1 w-full bg-muted rounded-full overflow-hidden">
                  <div className="h-full bg-violet-600 transition-all duration-1000" style={{ width: `${d.increase}%` }} />
               </div>
             </div>
@@ -218,23 +256,23 @@ export default function AnalyticsPage() {
       {/* 5. Compensation Percentiles */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {percentiles.map((p, i) => (
-          <Card key={i} className="p-6 border-none shadow-sm bg-white hover:shadow-md transition-shadow cursor-default group">
-            <div className="text-xs font-black text-blue-600 uppercase tracking-widest mb-1">{p.label}</div>
-            <div className="text-2xl font-black text-gray-900 mb-3 group-hover:scale-105 transition-transform origin-left">{p.value}</div>
-            <p className="text-[10px] text-gray-400 font-bold leading-relaxed">{p.description}</p>
+          <Card key={i} className="p-6 border-none shadow-sm bg-card hover:shadow-md transition-shadow cursor-default group">
+            <div className="text-xs font-black text-primary uppercase tracking-widest mb-1">{p.label}</div>
+            <div className="text-2xl font-black text-foreground mb-3 group-hover:scale-105 transition-transform origin-left">{p.value}</div>
+            <p className="text-[10px] text-muted-foreground font-bold leading-relaxed">{p.description}</p>
           </Card>
         ))}
       </div>
 
       {/* 6. Geo Intelligence Simulation */}
-      <Card className="p-8 border-none shadow-sm bg-gray-900 text-white overflow-hidden relative min-h-[400px]">
+      <Card className="p-8 border-none shadow-sm bg-zinc-950 text-white overflow-hidden relative min-h-[400px]">
          <div className="relative z-10 max-w-xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600 rounded-full mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary rounded-full mb-6">
                <Globe className="h-3 w-3" />
                <span className="text-[10px] font-black uppercase tracking-widest">Geo Intelligence</span>
             </div>
             <h3 className="text-3xl font-black mb-4">Location Premium Matrix</h3>
-            <p className="text-lg text-gray-400 font-medium mb-8 leading-relaxed">
+            <p className="text-lg text-muted-foreground font-medium mb-8 leading-relaxed">
                Identify the highest-paying hubs globally, normalized by Cost of Living and Local Purchasing Power.
             </p>
             <div className="grid grid-cols-2 gap-8 mb-10">
@@ -247,7 +285,7 @@ export default function AnalyticsPage() {
                   <div className="text-xl font-bold">Zurich, Switzerland</div>
                </div>
             </div>
-            <button className="px-8 py-4 bg-white text-gray-900 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-100 transition-all active:scale-95 shadow-2xl">
+            <button className="px-8 py-4 bg-card text-zinc-950 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#111827] transition-all active:scale-95 shadow-2xl">
                View Geo Dashboard
             </button>
          </div>

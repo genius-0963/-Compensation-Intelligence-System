@@ -50,16 +50,16 @@ export function WorkspaceAnalytics({ stats, isLoading }: AnalyticsProps) {
       <div className="flex items-center justify-between mb-8">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h2 className="text-2xl font-bold text-gray-900">Workspace Metrics</h2>
+            <h2 className="text-2xl font-bold text-foreground">Workspace Metrics</h2>
             <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-100">
               <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-[10px] font-black text-emerald-600 uppercase tracking-wider">Live</span>
             </div>
           </div>
-          <p className="text-sm text-gray-500">Real-time compensation and organizational health data.</p>
+          <p className="text-sm text-muted-foreground">Real-time compensation and organizational health data.</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-100 rounded-xl text-sm font-bold text-gray-700 transition-all">
-          <TrendingUp className="h-4 w-4 text-blue-600" />
+        <button className="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-muted/80 border border-border rounded-xl text-sm font-bold text-foreground transition-all">
+          <TrendingUp className="h-4 w-4 text-primary" />
           <span>Detailed Report</span>
         </button>
       </div>
@@ -68,7 +68,7 @@ export function WorkspaceAnalytics({ stats, isLoading }: AnalyticsProps) {
         {metrics.map((m, i) => (
           <div 
             key={i}
-            className="group bg-white border border-gray-100 rounded-[28px] p-6 hover:shadow-premium transition-all hover:-translate-y-1 relative overflow-hidden"
+            className="group bg-card border border-border rounded-[28px] p-6 hover:shadow-premium transition-all hover:-translate-y-1 relative overflow-hidden"
           >
             {/* Background Accent */}
             <div className={`absolute -right-4 -top-4 w-24 h-24 ${m.bg} opacity-30 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700`} />
@@ -84,19 +84,19 @@ export function WorkspaceAnalytics({ stats, isLoading }: AnalyticsProps) {
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">{m.title}</h3>
-              <div className="text-3xl font-black text-gray-900 tracking-tight">
+              <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-1">{m.title}</h3>
+              <div className="text-3xl font-black text-foreground tracking-tight">
                 {isLoading ? (
-                  <div className="h-8 w-24 bg-gray-100 animate-pulse rounded-lg" />
+                  <div className="h-8 w-24 bg-muted animate-pulse rounded-lg" />
                 ) : (
                   m.value
                 )}
               </div>
             </div>
             
-            <div className="mt-4 pt-4 border-t border-gray-50 flex items-center justify-between">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">vs last month</span>
-              <div className="h-1.5 w-12 bg-gray-50 rounded-full overflow-hidden">
+            <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">vs last month</span>
+              <div className="h-1.5 w-12 bg-muted rounded-full overflow-hidden">
                 <div className={`h-full ${m.color.replace('text', 'bg')}`} style={{ width: '70%' }} />
               </div>
             </div>

@@ -40,27 +40,40 @@ enum CandidateStatus {
 
 enum OfferStatus {
   DRAFT
-  PENDING
-  APPROVED
+  EXTENDED
+  NEGOTIATING
   ACCEPTED
   DECLINED
-  EXPIRED
+  WITHDRAWN
 }
 
-enum InsightType {
-  NEGOTIATION
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum InsightCategory {
+  BASE_SALARY
+  EQUITY
+  BONUS
+  LOCATION
+  LEVEL
   MARKET_POSITION
-  EQUITY_ANALYSIS
   RETENTION_RISK
-  COUNTER_OFFER
+  NEGOTIATION_OPPORTUNITY
 }
 
 model User {
   id                    String    @id @default(cuid())
   name                  String?
   email                 String?   @unique
+  password_hash         String?
   emailVerified         DateTime?
   image                 String?
+  onboardingCompleted   Boolean   @default(false)
+  onboardingCompletedAt DateTime?
   role                  UserRole  @default(USER)
   
   careerStage           String?
@@ -68,15 +81,36 @@ model User {
   targetCompensation    Float?
   yearsExperience       Float?    @default(0)
   location              String?
+  roleFamily            String?
+  interestedCompanies   String[]
+  compensationGoals     String?
+  phone                 String?
+  bio                   String?
+  level                 String?
+  linkedinUrl           String?
+  githubUrl             String?
+  portfolioUrl          String?
   notificationPrefs     Json?     
+  avatarUrl             String?
+  timezone              String?
+  currency              String?
+  preferences           Json?
   
   accounts              Account[]
   sessions              Session[]
+  userSessions          UserSession[]
+  userActivities        UserActivity[]
+  userPreferences       UserPreference[]
+  connectedAccounts     ConnectedAccount[]
   
   submissions           CompensationSubmission[]
-  watchlists            Watchlist[]
   savedComparisons      SavedComparison[]
   auditLogs             AuditLog[]
+
+  savedCompanies        SavedCompany[]
+  savedLevels           SavedLevel[]
+  savedLocations        SavedLocation[]
+  advisorConversations  AdvisorConversation[]
 
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
@@ -123,6 +157,16 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expires   DateTime
+  
+  @@unique([email, token])
+  @@map("password_reset_tokens")
+}
+
 model Company {
   id             String   @id @default(cuid())
   name           String
@@ -138,7 +182,7 @@ model Company {
   levels         Level[]
   compensations  CompensationEntry[]
   submissions    CompensationSubmission[]
-  watchlistedBy  Watchlist[]
+  savedBy        SavedCompany[]
 
   @@map("companies")
 }
@@ -173,6 +217,7 @@ model Level {
   bands               CompensationBand[]
   benchmarks          SalaryBenchmark[]
   offers              Offer[]
+  savedBy             SavedLevel[]
 
   @@map("levels")
 }
@@ -190,12 +235,12 @@ model Location {
   
   compensations      CompensationEntry[]
   submissions        CompensationSubmission[]
-  watchlistedBy      Watchlist[]
   employees          Employee[]
   bands              CompensationBand[]
   benchmarks         SalaryBenchmark[]
   offers             Offer[]
   marketDataPoints   MarketDataPoint[]
+  savedBy            SavedLocation[]
 
   @@unique([city, state, country])
   @@map("locations")
@@ -313,30 +358,13 @@ model CompensationInsight {
   @@map("compensation_insights")
 }
 
-model Watchlist {
-  id             String   @id @default(cuid())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  companyId      String?
-  company        Company? @relation(fields: [companyId], references: [id])
-  locationId     String?
-  location       Location? @relation(fields: [locationId], references: [id])
-  roleFamilyName String?
-  levelRank      Int?
-  
-  createdAt      DateTime @default(now())
-
-  @@index([userId])
-  @@map("watchlists")
-}
-
 model SavedComparison {
   id             String   @id @default(cuid())
   userId         String
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   title          String
+  description    String?
   config         Json     
   
   createdAt      DateTime @default(now())
@@ -573,18 +601,175 @@ model SalaryHistory {
 }
 
 model NegotiationInsight {
-  id         String      @id @default(cuid())
-  offerId    String
-  type       InsightType
-  title      String
-  insight    String
-  confidence Float
-  priority   Int         @default(0)
-  metadata   String?     // Using String to store serialized JSON for SQLite compatibility, or use Json if on Postgres
-  createdAt  DateTime    @default(now())
+  id          String          @id @default(cuid())
+  offerId     String
+  title       String
+  description String
+  severity    Severity
+  confidence  Float
+  category    InsightCategory
+  createdAt   DateTime        @default(now())
 
-  offer      Offer       @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  offer       Offer           @relation(fields: [offerId], references: [id], onDelete: Cascade)
 
   @@index([offerId])
   @@map("negotiation_insights")
 }
+
+model SavedCompany {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  notes     String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, companyId])
+  @@map("saved_companies")
+}
+
+model SavedLevel {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  levelId   String
+  level     Level    @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, levelId])
+  @@map("saved_levels")
+}
+
+model SavedLocation {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  locationId String
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, locationId])
+  @@map("saved_locations")
+}
+
+model AdvisorConversation {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  mode        String   @default("GENERAL")
+  isPinned    Boolean  @default(false)
+  isArchived  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  messages        AdvisorMessage[]
+  recommendations AdvisorRecommendation[]
+
+  @@index([userId])
+  @@map("advisor_conversations")
+}
+
+model AdvisorMessage {
+  id             String   @id @default(cuid())
+  conversationId String
+  conversation   AdvisorConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String
+  content        String   @db.Text
+  metadata       Json?
+  createdAt      DateTime @default(now())
+
+  attachments    AdvisorAttachment[]
+
+  @@index([conversationId])
+  @@map("advisor_messages")
+}
+
+model AdvisorAttachment {
+  id          String   @id @default(cuid())
+  messageId   String
+  message     AdvisorMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  type        String
+  referenceId String
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([messageId])
+  @@map("advisor_attachments")
+}
+
+model AdvisorRecommendation {
+  id             String   @id @default(cuid())
+  conversationId String
+  conversation   AdvisorConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  type           String
+  content        Json
+  confidence     Float?
+  createdAt      DateTime @default(now())
+
+  @@index([conversationId])
+  @@map("advisor_recommendations")
+}
+
+model UserSession {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  device       String?
+  browser      String?
+  os           String?
+  ipAddress    String?
+  location     String?
+  lastActive   DateTime @default(now())
+  isCurrent    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@map("user_sessions")
+}
+
+model UserActivity {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action       String
+  metadata     Json?
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@map("user_activities")
+}
+
+model UserPreference {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  theme            String   @default("system")
+  defaultCurrency  String   @default("USD")
+  defaultLocation  String?
+  marketingEmails  Boolean  @default(true)
+  productUpdates   Boolean  @default(true)
+  securityAlerts   Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("user_preferences")
+}
+
+model ConnectedAccount {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider     String
+  providerId   String
+  username     String?
+  email        String?
+  connectedAt  DateTime @default(now())
+  lastSyncedAt DateTime?
+
+  @@unique([userId, provider])
+  @@index([userId])
+  @@map("connected_accounts")
+}
+

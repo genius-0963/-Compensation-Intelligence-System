@@ -1,75 +1,63 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import PageHeader from '@/components/layout/page-header';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+"use client";
+
+import PageHeader from "@/components/layout/page-header";
+import { OfferCard } from "@/components/offers/offer-card";
+import { useOffers } from "@/hooks/use-offers";
+import { Button } from "@/components/ui/button";
+import { Plus, Search, Filter, MoreHorizontal, Download } from "lucide-react";
+import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function OffersPage() {
-  const [offers, setOffers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/offers')
-      .then(res => res.json())
-      .then(data => {
-        setOffers(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
-
-  const getScoreColor = (grade: string) => {
-    if (grade?.startsWith('A')) return 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20';
-    if (grade?.startsWith('B')) return 'text-sky-400 bg-sky-400/10 border-sky-400/20';
-    if (grade?.startsWith('C')) return 'text-amber-400 bg-amber-400/10 border-amber-400/20';
-    return 'text-rose-400 bg-rose-400/10 border-rose-400/20';
-  };
+  const { offers, isLoading, isError } = useOffers();
 
   return (
-    <div className="space-y-6">
-      <PageHeader title="Offer Comparison" description="Analyze and score candidate offers against market bands." />
-      
-      {loading ? (
-        <div className="text-slate-400">Loading offers...</div>
-      ) : offers.length === 0 ? (
-        <Card>
-          <CardContent className="p-12 text-center text-slate-500">
-            No offers found. Seed the database to see offers here.
-          </CardContent>
-        </Card>
+    <div className="p-6 max-w-7xl mx-auto space-y-6">
+      <PageHeader 
+        title="Offers" 
+        description="Track and analyze candidate offers with AI-powered competitiveness scoring."
+      >
+        <Link href="/offers/new">
+          <Button className="bg-violet-600 hover:bg-violet-700 text-white">
+            <Plus size={16} className="mr-2" />
+            Create Offer
+          </Button>
+        </Link>
+      </PageHeader>
+
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-2">
+           <Button variant="outline" className="border-slate-800 bg-[#0B1020] text-slate-300">
+             <Filter size={16} className="mr-2" />
+             Filters
+           </Button>
+        </div>
+        <div className="text-sm text-slate-500">
+          Showing {offers?.length || 0} active offers
+        </div>
+      </div>
+
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <Skeleton shape="card" className="h-64" />
+          <Skeleton shape="card" className="h-64" />
+          <Skeleton shape="card" className="h-64" />
+          <Skeleton shape="card" className="h-64" />
+        </div>
+      ) : isError ? (
+        <div className="text-rose-400 p-4 border border-rose-400/20 bg-rose-400/10 rounded-lg">
+          Failed to load offers.
+        </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {offers.map(offer => (
-            <Card key={offer.id} className="hover:border-white/10 transition-colors">
-              <CardContent className="p-6 flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold text-white">
-                    {offer.candidate.firstName} {offer.candidate.lastName}
-                  </h3>
-                  <p className="text-sm text-slate-400 mt-1">
-                    {offer.role.title} • {offer.level.name} • {offer.location.city}
-                  </p>
-                </div>
-                <div className="flex items-center gap-6">
-                  <div className="text-right">
-                    <p className="text-xs text-slate-500 uppercase font-semibold tracking-wider">Total Comp</p>
-                    <p className="text-lg font-bold text-slate-100">
-                      ${offer.totalCompensation.toLocaleString()}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-center justify-center h-16 w-16 rounded-lg border border-white/10 bg-slate-900">
-                    <span className="text-xs text-slate-500 mb-1">SCORE</span>
-                    <span className={`text-xl font-bold ${getScoreColor(offer.scoreGrade)}`}>
-                      {offer.scoreGrade || '-'}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {offers?.map(offer => (
+             <OfferCard key={offer.id} offer={offer} />
           ))}
+          {(!offers || offers.length === 0) && (
+            <div className="col-span-full p-8 text-center text-slate-500 bg-[#0B1020] rounded-lg border border-slate-800">
+              No offers found.
+            </div>
+          )}
         </div>
       )}
     </div>

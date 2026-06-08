@@ -73,19 +73,19 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
   return (
     <div className="space-y-8 pb-20">
       {/* 1. Company Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border">
          <div className="flex items-center gap-6">
-            <div className="h-20 w-20 rounded-3xl bg-white border border-gray-100 flex items-center justify-center text-gray-900 font-black text-4xl shadow-sm">
+            <div className="h-20 w-20 rounded-3xl bg-card border border-border flex items-center justify-center text-white font-black text-4xl shadow-sm">
                {company.logo}
             </div>
             <div>
                <div className="flex items-center gap-3 mb-1">
-                  <h1 className="text-4xl font-black text-gray-900 tracking-tight">{company.name}</h1>
-                  <a href={`https://${company.website}`} target="_blank" className="p-2 bg-gray-50 rounded-lg text-gray-400 hover:text-blue-600 transition-colors">
+                  <h1 className="text-4xl font-black text-white tracking-tight">{company.name}</h1>
+                  <a href={`https://${company.website}`} target="_blank" className="p-2 bg-[#0B1020] rounded-lg text-gray-400 hover:text-blue-600 transition-colors">
                      <ExternalLink className="h-4 w-4" />
                   </a>
                </div>
-               <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium text-gray-500">
+               <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium text-slate-500">
                   <div className="flex items-center gap-1.5"><Briefcase className="h-4 w-4" /> {company.industry}</div>
                   <div className="flex items-center gap-1.5"><Users className="h-4 w-4" /> {company.headcount}</div>
                   <div className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {company.hq}</div>
@@ -93,10 +93,10 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
             </div>
          </div>
          <div className="flex items-center gap-3">
-            <button className="px-5 py-2.5 bg-white border border-gray-100 rounded-xl text-xs font-black uppercase tracking-widest text-gray-700 hover:bg-gray-50 shadow-sm transition-all">
+            <button className="px-5 py-2.5 bg-card border border-border rounded-xl text-xs font-black uppercase tracking-widest text-gray-700 hover:bg-[#172033] shadow-sm transition-all">
                Add to Watchlist
             </button>
-            <button className="px-5 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-gray-800 shadow-lg transition-all active:scale-95">
+            <button className="px-5 py-2.5 bg-[#1F2937] text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-[#111827] shadow-lg transition-all active:scale-95">
                Share Profile
             </button>
          </div>
@@ -105,12 +105,12 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
       {/* 2. Metrics Row */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {metrics.map((m, i) => (
-          <Card key={i} className="p-5 border-none shadow-sm bg-white">
+          <Card key={i} className="p-5 border-none shadow-sm bg-card">
             <div className={`h-8 w-8 rounded-lg ${m.bg} ${m.color} flex items-center justify-center mb-3`}>
               <m.icon className="h-4 w-4" />
             </div>
             <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{m.title}</h3>
-            <div className="text-xl font-black text-gray-900">{m.value}</div>
+            <div className="text-xl font-black text-white">{m.value}</div>
           </Card>
         ))}
       </div>
@@ -123,8 +123,8 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
             onClick={() => setActiveTab(tab.toLowerCase())}
             className={`px-6 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === tab.toLowerCase() 
-                ? 'bg-white text-blue-600 shadow-sm' 
-                : 'text-gray-500 hover:text-gray-900'
+                ? 'bg-card text-blue-600 shadow-sm' 
+                : 'text-slate-500 hover:text-white'
             }`}
           >
             {tab}
@@ -137,11 +137,11 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-up">
            <div className="lg:col-span-8 space-y-8">
               {/* Compensation Distribution */}
-              <Card className="p-8 border-none shadow-sm bg-white">
+              <Card className="p-8 border-none shadow-sm bg-card">
                  <div className="flex items-center justify-between mb-8">
                     <div>
-                       <h3 className="text-xl font-black text-gray-900">Total Compensation Distribution</h3>
-                       <p className="text-sm text-gray-500 mt-1">Breakdown of reported packages for Software Engineering roles.</p>
+                       <h3 className="text-xl font-black text-white">Total Compensation Distribution</h3>
+                       <p className="text-sm text-slate-500 mt-1">Breakdown of reported packages for Software Engineering roles.</p>
                     </div>
                     <div className="h-10 w-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
                        <BarChart3 className="h-5 w-5" />
@@ -167,9 +167,9 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
               </Card>
 
               {/* Salary by Level Table */}
-              <Card className="border-none shadow-sm bg-white overflow-hidden">
-                 <div className="p-6 border-b border-gray-50">
-                    <h3 className="text-lg font-black text-gray-900">Compensation by Level</h3>
+              <Card className="border-none shadow-sm bg-card overflow-hidden">
+                 <div className="p-6 border-b border-border">
+                    <h3 className="text-lg font-black text-white">Compensation by Level</h3>
                  </div>
                  <table className="w-full text-left">
                     <thead>
@@ -178,22 +178,22 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
                           <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Equivalent</th>
                           <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Median TC</th>
                           <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Stock %</th>
-                          <th className="px-6 py-4 text-center border-l border-gray-100"></th>
+                          <th className="px-6 py-4 text-center border-l border-border"></th>
                        </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-50">
+                    <tbody className="divide-y divide-border">
                        {levelData.map((lvl, i) => (
                           <tr key={i} className="hover:bg-gray-50/50 transition-colors group cursor-pointer">
                              <td className="px-6 py-4">
-                                <span className="font-black text-gray-900">{lvl.name}</span>
+                                <span className="font-black text-white">{lvl.name}</span>
                              </td>
-                             <td className="px-6 py-4 text-xs font-bold text-gray-500">
+                             <td className="px-6 py-4 text-xs font-bold text-slate-500">
                                 Rank {i + 3} (Mid-Senior)
                              </td>
                              <td className="px-6 py-4 text-right font-black text-blue-600">
                                 {formatCurrency(lvl.median)}
                              </td>
-                             <td className="px-6 py-4 text-right font-bold text-gray-500">
+                             <td className="px-6 py-4 text-right font-bold text-slate-500">
                                 {30 + (i * 5)}%
                              </td>
                              <td className="px-6 py-4 text-center">
@@ -208,8 +208,8 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
 
            <div className="lg:col-span-4 space-y-8">
               {/* Compensation Mix */}
-              <Card className="p-8 border-none shadow-sm bg-white">
-                 <h3 className="text-lg font-black text-gray-900 mb-8 text-center">Compensation Mix</h3>
+              <Card className="p-8 border-none shadow-sm bg-card">
+                 <h3 className="text-lg font-black text-white mb-8 text-center">Compensation Mix</h3>
                  <div className="h-[240px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                        <PieChart>
@@ -235,9 +235,9 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
                        <div key={i} className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                              <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                             <span className="text-xs font-bold text-gray-500">{item.name}</span>
+                             <span className="text-xs font-bold text-slate-500">{item.name}</span>
                           </div>
-                          <span className="text-sm font-black text-gray-900">{item.value}%</span>
+                          <span className="text-sm font-black text-white">{item.value}%</span>
                        </div>
                     ))}
                  </div>
@@ -246,7 +246,7 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
               {/* Verified Badge */}
               <Card className="p-6 border-none shadow-sm bg-emerald-50 border border-emerald-100">
                  <div className="flex items-center gap-3 mb-4">
-                    <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center text-emerald-600 shadow-sm">
+                    <div className="h-10 w-10 rounded-xl bg-card flex items-center justify-center text-emerald-600 shadow-sm">
                        <ShieldCheck className="h-6 w-6" />
                     </div>
                     <h3 className="font-black text-emerald-900 uppercase tracking-widest text-[10px]">Verified Data</h3>
@@ -257,7 +257,7 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
               </Card>
 
               {/* Comparison CTA */}
-              <Card className="p-6 border-none shadow-sm bg-gray-900 text-white relative overflow-hidden">
+              <Card className="p-6 border-none shadow-sm bg-[#1F2937] text-white relative overflow-hidden">
                  <div className="relative z-10">
                     <h3 className="text-lg font-black mb-2">How does Google compare?</h3>
                     <p className="text-sm text-gray-400 mb-6 font-medium">Side-by-side analysis against Meta, Amazon, and Microsoft.</p>

@@ -47,17 +47,17 @@ export function ActivityFeed() {
     <div className="py-12">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Recent Activity</h2>
-          <p className="text-sm text-gray-500 mt-1">Track updates across all projects and team members.</p>
+          <h2 className="text-2xl font-bold text-foreground">Recent Activity</h2>
+          <p className="text-sm text-muted-foreground mt-1">Track updates across all projects and team members.</p>
         </div>
-        <button className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors">View Audit Log</button>
+        <button className="text-sm font-bold text-primary hover:text-primary/80 transition-colors">View Audit Log</button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {activities.map((item, i) => (
           <div 
             key={i}
-            className="group bg-white border border-gray-100 rounded-[24px] p-5 hover:shadow-premium transition-all hover:-translate-y-1 flex items-start gap-4"
+            className="group bg-card border border-border rounded-[24px] p-5 hover:shadow-premium transition-all hover:-translate-y-1 flex items-start gap-4"
           >
             <div className={`h-12 w-12 rounded-2xl ${item.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
               <item.icon className="h-6 w-6" />
@@ -65,21 +65,21 @@ export function ActivityFeed() {
             
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-1">
-                <h4 className="font-bold text-gray-900 truncate pr-4">{item.title}</h4>
-                <span className="text-[10px] font-bold text-gray-400 whitespace-nowrap">{item.time}</span>
+                <h4 className="font-bold text-foreground truncate pr-4">{item.title}</h4>
+                <span className="text-[10px] font-bold text-muted-foreground whitespace-nowrap">{item.time}</span>
               </div>
-              <p className="text-sm text-gray-500 mb-3">
-                in <span className="font-bold text-gray-700">{item.project}</span>
+              <p className="text-sm text-muted-foreground mb-3">
+                in <span className="font-bold text-foreground">{item.project}</span>
               </p>
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="h-6 w-6 rounded-full bg-gray-100 flex items-center justify-center">
-                    <User className="h-3 w-3 text-gray-400" />
+                  <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center">
+                    <User className="h-3 w-3 text-muted-foreground" />
                   </div>
-                  <span className="text-xs font-medium text-gray-600">{item.user}</span>
+                  <span className="text-xs font-medium text-muted-foreground">{item.user}</span>
                 </div>
-                <button className="text-gray-400 hover:text-blue-600 transition-colors">
+                <button className="text-muted-foreground hover:text-primary transition-colors">
                   <ArrowUpRight className="h-4 w-4" />
                 </button>
               </div>

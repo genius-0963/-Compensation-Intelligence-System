@@ -35,11 +35,11 @@ export default function CompaniesPage() {
       {/* 1. Header & Search */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">Company Directory</h1>
-          <p className="text-gray-500 mt-1 font-medium">Explore compensation benchmarks by company and industry size.</p>
+          <h1 className="text-3xl font-black text-white tracking-tight">Company Directory</h1>
+          <p className="text-slate-500 mt-1 font-medium">Explore compensation benchmarks by company and industry size.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="h-11 px-5 bg-white border border-gray-100 rounded-xl text-xs font-black uppercase tracking-widest text-gray-700 hover:bg-gray-50 shadow-sm transition-all">
+          <button className="h-11 px-5 bg-card border border-border rounded-xl text-xs font-black uppercase tracking-widest text-gray-700 hover:bg-[#172033] shadow-sm transition-all">
             Filter Industries
           </button>
           <button className="h-11 px-6 bg-blue-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2">
@@ -50,7 +50,7 @@ export default function CompaniesPage() {
       </div>
 
       {/* 2. Company Search Bar */}
-      <Card className="p-2 border-none shadow-sm bg-white overflow-hidden max-w-3xl">
+      <Card className="p-2 border-none shadow-sm bg-card overflow-hidden max-w-3xl">
         <div className="flex items-center gap-2">
            <div className="flex-1 relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -62,8 +62,8 @@ export default function CompaniesPage() {
                 onChange={(e) => setSearchParams(e.target.value)}
               />
            </div>
-           <div className="h-8 w-px bg-gray-100 mx-2" />
-           <button className="h-10 px-4 bg-gray-50 text-gray-400 rounded-lg flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
+           <div className="h-8 w-px bg-[#111827] mx-2" />
+           <button className="h-10 px-4 bg-[#0B1020] text-gray-400 rounded-lg flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
               <Filter className="h-3.5 w-3.5" />
               All Sizes
               <ChevronDown className="h-3 w-3" />
@@ -75,14 +75,14 @@ export default function CompaniesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {companies.map((co) => (
           <Link key={co.id} href={`/companies/${co.id}`}>
-            <Card className="p-6 border-none shadow-sm hover:shadow-premium transition-all hover:-translate-y-1 group relative overflow-hidden bg-white">
+            <Card className="p-6 border-none shadow-sm hover:shadow-premium transition-all hover:-translate-y-1 group relative overflow-hidden bg-card">
               {/* Background Ornament */}
               <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
                 <Building2 className="h-24 w-24 -rotate-12" />
               </div>
 
               <div className="flex items-start justify-between mb-6">
-                <div className="h-12 w-12 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-900 font-black text-xl shadow-sm group-hover:scale-110 transition-transform">
+                <div className="h-12 w-12 rounded-2xl bg-[#0B1020] border border-border flex items-center justify-center text-white font-black text-xl shadow-sm group-hover:scale-110 transition-transform">
                   {co.logo}
                 </div>
                 <div className="flex flex-col items-end">
@@ -93,13 +93,13 @@ export default function CompaniesPage() {
                 </div>
               </div>
 
-              <h3 className="text-xl font-black text-gray-900 group-hover:text-blue-600 transition-colors mb-1">{co.name}</h3>
-              <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-6">{co.industry}</p>
+              <h3 className="text-xl font-black text-white group-hover:text-blue-600 transition-colors mb-1">{co.name}</h3>
+              <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-6">{co.industry}</p>
 
-              <div className="grid grid-cols-2 gap-4 pt-6 border-t border-gray-50">
+              <div className="grid grid-cols-2 gap-4 pt-6 border-t border-border">
                 <div>
                    <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Median TC</div>
-                   <div className="text-lg font-black text-gray-900">{formatCurrency(co.medianTC)}</div>
+                   <div className="text-lg font-black text-white">{formatCurrency(co.medianTC)}</div>
                 </div>
                 <div className="text-right">
                    <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Headcount</div>

@@ -53,13 +53,13 @@ export default function LocationsPage() {
       {/* 1. Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">Geographical Intelligence</h1>
-          <p className="text-gray-500 mt-1 font-medium">Global compensation mapping and cost-of-living adjustments.</p>
+          <h1 className="text-3xl font-black text-white tracking-tight">Geographical Intelligence</h1>
+          <p className="text-slate-500 mt-1 font-medium">Global compensation mapping and cost-of-living adjustments.</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative">
              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-             <input type="text" placeholder="Search cities..." className="h-10 pl-9 pr-4 bg-white border border-gray-100 rounded-xl text-xs focus:ring-2 focus:ring-blue-500/10 outline-none shadow-sm" />
+             <input type="text" placeholder="Search cities..." className="h-10 pl-9 pr-4 bg-card border border-border rounded-xl text-xs focus:ring-2 focus:ring-blue-500/10 outline-none shadow-sm" />
           </div>
           <button className="h-10 px-4 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 shadow-lg">
              Compare Locations
@@ -68,7 +68,7 @@ export default function LocationsPage() {
       </div>
 
       {/* 2. Map Visualization Simulation */}
-      <Card className="p-8 border-none shadow-sm bg-gray-900 text-white overflow-hidden relative min-h-[450px] flex flex-col justify-center items-center text-center">
+      <Card className="p-8 border-none shadow-sm bg-[#1F2937] text-white overflow-hidden relative min-h-[450px] flex flex-col justify-center items-center text-center">
          <div className="relative z-10 max-w-2xl">
             <div className="h-20 w-20 rounded-[32px] bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-8">
                <Globe className="h-10 w-10 text-blue-400 animate-pulse" />
@@ -105,15 +105,15 @@ export default function LocationsPage() {
       {/* 3. Country Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {countryCards.map((c) => (
-          <Card key={c.code} className="p-6 border-none shadow-sm bg-white hover:shadow-md transition-shadow group cursor-pointer">
+          <Card key={c.code} className="p-6 border-none shadow-sm bg-card hover:shadow-md transition-shadow group cursor-pointer">
             <div className="flex items-center justify-between mb-4">
-               <div className="h-10 w-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center text-sm font-black text-gray-400 group-hover:text-blue-600 transition-colors uppercase tracking-widest">{c.code}</div>
+               <div className="h-10 w-10 rounded-xl bg-[#0B1020] border border-border flex items-center justify-center text-sm font-black text-gray-400 group-hover:text-blue-600 transition-colors uppercase tracking-widest">{c.code}</div>
                <div className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded uppercase tracking-widest">{c.growth}</div>
             </div>
-            <h3 className="font-black text-gray-900 group-hover:text-blue-600 transition-colors">{c.name}</h3>
-            <div className="mt-4 pt-4 border-t border-gray-50">
+            <h3 className="font-black text-white group-hover:text-blue-600 transition-colors">{c.name}</h3>
+            <div className="mt-4 pt-4 border-t border-border">
                <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Median Country TC</div>
-               <div className="text-xl font-black text-gray-900">{formatCurrency(c.median)}</div>
+               <div className="text-xl font-black text-white">{formatCurrency(c.median)}</div>
             </div>
           </Card>
         ))}
@@ -121,9 +121,9 @@ export default function LocationsPage() {
 
       {/* 4. City Ranking Table & Analysis */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-        <Card className="xl:col-span-8 border-none shadow-sm bg-white overflow-hidden">
-          <div className="p-6 border-b border-gray-50 flex items-center justify-between">
-             <h3 className="text-lg font-black text-gray-900">City Ranking Matrix</h3>
+        <Card className="xl:col-span-8 border-none shadow-sm bg-card overflow-hidden">
+          <div className="p-6 border-b border-border flex items-center justify-between">
+             <h3 className="text-lg font-black text-white">City Ranking Matrix</h3>
              <div className="flex items-center gap-2">
                 <Info className="h-4 w-4 text-gray-400" />
                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Adjusted by local PPP</span>
@@ -137,14 +137,14 @@ export default function LocationsPage() {
                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Median TC</th>
                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">CoL Index</th>
                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Adjusted TC</th>
-                   <th className="px-6 py-4 text-center border-l border-gray-100"></th>
+                   <th className="px-6 py-4 text-center border-l border-border"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-border">
                 {cityData.map((d, i) => (
                   <tr key={i} className="hover:bg-gray-50/50 transition-colors group cursor-pointer">
                     <td className="px-6 py-4">
-                       <span className="font-bold text-gray-900">{d.city}</span>
+                       <span className="font-bold text-white">{d.city}</span>
                     </td>
                     <td className="px-6 py-4 text-right font-medium text-gray-700">
                        {formatCurrency(d.medianTC)}
@@ -168,8 +168,8 @@ export default function LocationsPage() {
         </Card>
 
         <div className="xl:col-span-4 space-y-6">
-           <Card className="p-8 border-none shadow-sm bg-white">
-              <h3 className="text-lg font-black text-gray-900 mb-8">Location Adjusted Pay</h3>
+           <Card className="p-8 border-none shadow-sm bg-card">
+              <h3 className="text-lg font-black text-white mb-8">Location Adjusted Pay</h3>
               <div className="h-[300px] w-full">
                  <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={cityData.slice(0, 5)} layout="vertical">
@@ -192,7 +192,7 @@ export default function LocationsPage() {
                  </div>
                  <h3 className="text-xl font-black mb-2">Growth Hotspot</h3>
                  <p className="text-sm font-medium opacity-90 mb-6">Bangalore leads global growth with a +12.5% increase in verified compensation packages this year.</p>
-                 <button className="w-full py-3 bg-white text-blue-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-gray-50 transition-all">
+                 <button className="w-full py-3 bg-card text-blue-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-[#172033] transition-all">
                     View Bangalore Report
                  </button>
               </div>

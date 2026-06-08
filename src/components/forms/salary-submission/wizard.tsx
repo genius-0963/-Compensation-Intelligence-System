@@ -24,7 +24,7 @@ export function SalaryWizard() {
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-2xl mx-auto p-8 bg-white border border-gray-100 rounded-3xl shadow-sm">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-2xl mx-auto p-8 bg-card border border-border rounded-3xl shadow-sm">
         {step === 1 && <EmploymentInfoStep />}
         {step === 2 && <div>Step 2: Level Info (Placeholder)</div>}
         {step === 3 && <CompensationBreakdownStep />}

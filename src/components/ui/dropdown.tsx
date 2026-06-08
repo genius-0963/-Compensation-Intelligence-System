@@ -32,7 +32,7 @@ export function Dropdown({
       {isOpen && (
         <div 
           className={cn(
-            "absolute z-50 mt-2 w-56 rounded-md border border-slate-800 bg-slate-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in-0 zoom-in-95",
+            "absolute z-50 mt-2 w-56 rounded-md border border-slate-800 bg-[#0B1020] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in-0 zoom-in-95",
             align === 'right' ? "right-0 origin-top-right" : "left-0 origin-top-left"
           )}
           onClick={() => setIsOpen(false)}
