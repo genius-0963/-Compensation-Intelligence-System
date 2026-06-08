@@ -1,249 +1,338 @@
-# 📈 Compensation Intelligence System
+# Compensation Intelligence Platform
 
-![Project Logo Placeholder]
-
-**"The Bloomberg for Compensation: Benchmarking, Analytics & Offer Optimization"**
-
-> "Levels are the language of professional compensation."
+<div align="center">
+  <h3>Data-driven compensation intelligence platform for HR professionals, managers, and engineers.</h3>
+</div>
 
 ---
 
-## 🛡️ Status & Badges
-[![Next.js 15](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-5.x-teal?logo=prisma)](https://www.prisma.io/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)](https://www.postgresql.org/)
-[![Auth.js](https://img.shields.io/badge/Auth.js-v5-green?logo=auth0)](https://authjs.dev/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](https://docker.com/)
-[![License](https://img.shields.io/badge/License-MIT-lightgrey)](./LICENSE)
+## 📖 Project Overview
+
+**Purpose:** Provide real-time, verified compensation intelligence across companies, levels, and geographic locations.
+
+**Business Value:** Eliminates information asymmetry in tech compensation. Empowers candidates to negotiate better offers and helps companies price talent accurately using AI-driven insights.
+
+**Target Users:** 
+- Software Engineers & Tech Professionals (Candidates)
+- Hiring Managers & Recruiters (Employers)
+- HR Compensation Analysts
+
+**Problem Being Solved:** Compensation data is traditionally fragmented, outdated, or hidden behind expensive paywalls. This platform democratizes compensation structures by providing structured level mappings, location-based cost-of-living adjustments, and AI-powered offer negotiation strategies.
 
 ---
 
-## 1. Product Overview
+## ✨ Key Features
 
-The compensation landscape is broken. Data is fragmented, job titles are misleading, and salary bands are guarded behind corporate gates. The **Compensation Intelligence System** disrupts this by democratizing high-fidelity, normalized compensation data.
-
-### 🎯 The "Staff Engineer" Perspective
-We transform raw, user-contributed salary submissions into actionable market intelligence. We prioritize **Level Normalization** over raw job titles, ensuring that comparisons are based on standardized career ranks (1–10) rather than misleading naming conventions.
-
-### Core Philosophy: "Levels Matter More Than Titles"
-A "Senior Engineer" at a mid-market startup is not equivalent to a "Senior Engineer" at Google. Our system maps internal titles to a universal **Normalized Rank**, allowing for true Apple-to-Apple comparisons across the industry.
-
----
-
-## 2. Feature Matrix
-
-| Module | Purpose | Core Intelligence Metric |
-| :--- | :--- | :--- |
-| **Salary Explorer** | Global record search | Median, Percentiles (P10-P95) |
-| **Companies** | Firm-specific benchmarking | Industry growth, Pay competitiveness |
-| **Analytics** | Macro trend modeling | Histograms, Distribution Skew |
-| **Comp Compare** | Side-by-side analysis | Package parity (TC breakdown) |
-| **Locations** | Geo-intelligence | Cost of Living Index (COLI) adjustment |
-| **Levels** | Career Ladder benchmarking | Level Rank (1-10) Equivalency |
-| **Watchlist** | Real-time monitoring | Automated Market Alerts |
-| **Salary Submission** | Data Contribution | Multi-step Wizard + Intelligence Engine |
-| **Verification** | Trust orchestration | OCR + Admin Moderator Workflow |
-| **Admin Dashboard** | Governance layer | Normalization Tools, Audit Logs |
+- **Authentication:** Enterprise-grade OAuth (Google, GitHub) & Credentials login.
+- **Salary Explorer:** Advanced filtering for global compensation data.
+- **Company Intelligence:** Deep dives into company-specific compensation bands.
+- **Level Intelligence:** Algorithmic level mapping across top tech companies (e.g., Google L5 = Meta E5).
+- **Compensation Comparison:** Side-by-side comparison of multiple compensation packages.
+- **AI Advisor:** Gemini-powered autonomous agent for personalized career and negotiation advice.
+- **Offers Analysis:** Detailed breakdown and scoring of job offers.
+- **Negotiation Intelligence:** AI-generated negotiation strategies and counter-offer recommendations.
+- **Analytics:** Macro-level trends on global compensation shifts.
+- **Profile Management:** Comprehensive professional profile tracking.
+- **Settings:** Extensive user preferences, privacy, and security controls.
+- **Watchlist & Saved:** Track specific companies, roles, and locations over time.
 
 ---
 
-## 3. High-Level Architecture (HLD)
+## 🖥️ Platform Screens
 
-The platform is designed as a modular, scalable SaaS application leveraging the Next.js App Router for server-side performance and React Query for client-side reactivity.
+| Screen | Description |
+|--------|-------------|
+| **Dashboard** | Personalized overview of saved comparisons, recent insights, and market trends. |
+| **Explorer** | Global database of compensation entries with granular filtering. |
+| **Companies** | Directory of tech companies with compensation bands and level structures. |
+| **Locations** | Geographic compensation analysis and cost-of-living adjustments. |
+| **Levels** | Cross-company level mapping and promotion intelligence. |
+| **Analytics** | Macro-level charts showing market trends and YoY compensation growth. |
+| **Offers** | Offer management, scoring, and side-by-side comparison. |
+| **AI Advisor** | Chat interface with the Principal AI Compensation Advisor. |
+| **Profile** | Professional onboarding and experience management. |
+| **Settings** | Enterprise account center for security, billing, and connected accounts. |
+
+---
+
+## 🏗️ Architecture Overview
+
+The system is built as a **Modular Monolith** using Next.js App Router, enabling rapid development while maintaining clean module boundaries for future microservice extraction.
 
 ```mermaid
 graph TD
-    User((User)) --> FE[Next.js 15 Frontend]
-    FE --> API[API Gateway / Server Actions]
+    User([User]) --> Frontend[Next.js React Frontend]
+    Frontend --> API[Next.js API Routes]
     
-    subgraph "Auth & Identity"
-        Auth[Auth Service]
+    subgraph Core Platform
+        API --> Auth[NextAuth.js]
+        API --> DB_Layer[Prisma ORM]
     end
     
-    subgraph "Core Business Logic"
-        CompService[Compensation Service]
-        Analytics[Analytics Service]
-        Verify[Verification Service]
-        Notify[Notification Service]
+    subgraph Intelligence Engine
+        API --> AIService[AI Services]
+        AIService --> Gemini[Google Gemini API]
     end
     
-    API --> Auth
-    API --> CompService
-    API --> Analytics
-    API --> Verify
-    API --> Admin[Admin Service]
-    
-    CompService --> DB[(PostgreSQL)]
-    Analytics --> DB
-    Verify --> DB
-    Verify --> S3[Storage: S3/R2]
-    
-    CompService --> Redis[Redis Cache]
-    Analytics --> Redis
-    
-    Backend --> Notify[Notification System]
-    Notify --> Resend[Resend API]
-    Notify --> Push[Web Push Service]
+    DB_Layer --> Postgres[(PostgreSQL)]
 ```
 
 ---
 
-## 4. Microservice Architecture
+## 📐 High Level Design (HLD)
 
-### 1. User Service
-*   **Purpose:** Identity management, RBAC, Profile Persistence.
-*   **Input:** OAuth Credentials.
-*   **Output:** JWT Sessions, Role-based ACLs.
+### Frontend Layer
+- **Tech:** Next.js 14, React, TypeScript, TailwindCSS, Shadcn UI
+- **Responsibilities:** Server-side rendering, routing, state management, and highly interactive UI components (dashboards, charts).
 
-### 2. Compensation Service
-*   **Purpose:** Salary submission, TC calculation, normalization.
-*   **Logic:** Executes fuzzy matching for company name canonicalization (e.g., "Google LLC" -> "Google").
-*   **Dependencies:** Zod, Normalization Library.
+### Backend Layer
+- **Tech:** Next.js API Routes (Serverless)
+- **Responsibilities:** Handling HTTP requests, business logic execution, data validation (Zod), and orchestrating external services.
 
-### 3. Analytics Service
-*   **Purpose:** Macro-level market intelligence.
-*   **Output:** Percentiles, Distributions, Trends.
-*   **Strategy:** Compute heavy aggregations offline/background; cache results in Redis.
+### Database Layer
+- **Tech:** PostgreSQL + Prisma ORM
+- **Responsibilities:** Relational data storage, indexing, referential integrity, and complex aggregations.
 
-### 4. Verification Service
-*   **Purpose:** Trust orchestration.
-*   **Logic:** Admin Review Queue + Submission Document management.
-*   **Tables:** `SubmissionDocument`, `VerificationReview`.
+### AI Layer
+- **Tech:** Vercel AI SDK + Google Gemini (`gemini-2.5-flash`)
+- **Responsibilities:** Streaming text generation, structured JSON extraction for offer analysis, and autonomous advisory capabilities.
+
+### Authentication Layer
+- **Tech:** NextAuth.js
+- **Responsibilities:** OAuth handshakes (Google, GitHub), credential hashing (bcrypt), session management (JWT), and route protection.
 
 ---
 
-## 5. Database Schema (ERD)
+## 🔍 Low Level Design (LLD)
+
+### Auth Module
+- **Routes:** `/api/auth/[...nextauth]`, `/login`, `/signup`
+- **Responsibilities:** Securely authenticating users and managing sessions.
+
+### Offers Module
+- **Routes:** `/api/offers`, `/api/insights/negotiation`
+- **Responsibilities:** Storing candidate offers and calculating compensation percentiles.
+
+### Advisor Module
+- **Routes:** `/api/advisor/chat`, `/api/advisor/conversations`
+- **Responsibilities:** Managing conversational history and streaming AI responses.
+
+### Levels Module
+- **Routes:** `/api/levels`, `/api/levels/intelligence`
+- **Responsibilities:** Aggregating data to map equivalent levels across the industry.
+
+### Explorer & Analytics
+- **Routes:** `/api/salaries`, `/api/stats/*`
+- **Responsibilities:** Complex DB queries grouping compensation data by role, level, and location.
+
+---
+
+## 🗄️ Database Design
 
 ```mermaid
 erDiagram
-    USER ||--o{ COMPENSATION_SUBMISSION : "submits"
-    USER ||--o{ WATCHLIST : "tracks"
-    USER ||--o{ SAVED_COMPARISON : "saves"
-    USER ||--o{ AUDIT_LOG : "triggers"
-    COMPANY ||--o{ LEVEL : "has"
-    COMPANY ||--o{ COMPENSATION_ENTRY : "owns"
-    LEVEL ||--o{ COMPENSATION_ENTRY : "mapped_to"
-    LOCATION ||--o{ COMPENSATION_ENTRY : "located_in"
-    COMPENSATION_SUBMISSION ||--o{ SUBMISSION_DOCUMENT : "has"
-    COMPENSATION_SUBMISSION ||--o{ COMPENSATION_INSIGHT : "generates"
-    ROLE_FAMILY ||--o{ COMPENSATION_ENTRY : "type"
-    
-    USER {
-        string id PK
-        string email
-        string role
-        json notificationPrefs
-    }
-    COMPENSATION_SUBMISSION {
-        string id PK
-        string status
-        float totalCompensation
-        json documents
-    }
-    COMPENSATION_ENTRY {
-        string id PK
-        float totalCompensation
-        boolean isVerified
-    }
+    User ||--o{ Account : has
+    User ||--o{ Session : has
+    User ||--o{ CompensationSubmission : submits
+    User ||--o{ SavedComparison : saves
+    User ||--o{ AdvisorConversation : initiates
+
+    Company ||--o{ Level : defines
+    Company ||--o{ CompensationEntry : contains
+
+    RoleFamily ||--o{ CompensationEntry : categorizes
+    Location ||--o{ CompensationEntry : geographically_bounds
+
+    Level ||--o{ CompensationEntry : scopes
+    Level ||--o{ Offer : scopes
+
+    Candidate ||--o{ Offer : receives
+    Offer ||--o{ NegotiationInsight : generates
+
+    AdvisorConversation ||--o{ AdvisorMessage : contains
 ```
 
 ---
 
-## 6. Compensation Intelligence Engine
+## 🔌 API Documentation
 
-### The Formula
-`TC = Base_Salary + Annual_Bonus + Signing_Bonus + Performance_Bonus + (Total_Stock_Grant / 4) + Other`
-
-### The Normalization Pipeline
-1.  **Ingestion:** Raw user data input.
-2.  **Canonicalization:** Map Company Name -> Normalized Company (e.g., "Google LLC" -> "Google").
-3.  **Level Mapping:** Map Internal Level -> Level Rank (1-10).
-4.  **Percentile Positioning:** Database lookup for `Count(TC) WHERE Rank = 4 AND Company = Google`.
-5.  **Insight Generation:** Compare against cohort median; generate comparative string.
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/auth/[...nextauth]` | POST/GET | Handles OAuth and credential login. |
+| `/api/user/profile` | GET/PUT | Fetches and updates the authenticated user's profile. |
+| `/api/levels/intelligence`| GET | Returns cross-company level mapping matrices. |
+| `/api/salaries` | GET | Retrieves paginated and filtered compensation entries. |
+| `/api/offers` | POST | Submits a new job offer for AI analysis. |
+| `/api/advisor/chat` | POST | Streams AI responses for the compensation advisor. |
+| `/api/companies` | GET | Retrieves company directory and metadata. |
+| `/api/stats/global` | GET | Returns macro-level compensation statistics. |
 
 ---
 
-## 7. Workflows
+## 🔐 Authentication Flow
 
-### Salary Submission Sequence
 ```mermaid
-sequenceDiagram
-    participant U as User
-    participant F as Frontend
-    participant A as Action
-    participant D as DB
-    participant V as Verification
-    participant Admin as Moderator
-    
-    U->>F: Submit Wizard (Steps 1-4)
-    F->>A: Create Submission (DRAFT)
-    A->>D: Persist Data
-    A->>V: Upload Docs to S3
-    A->>D: Trigger Intelligence Engine
-    A->>F: Return Review Status
-    Admin->>D: Review Queue
-    Admin->>D: Verify/Approve
-    D->>Notification: Trigger Verified Status
+graph TD
+    A[Google/GitHub Login] --> B[NextAuth Provider]
+    B --> C{User Record Exists?}
+    C -->|No| D[Create User in Database]
+    C -->|Yes| E[Generate Secure Session JWT]
+    D --> E
+    E --> F{Onboarding Complete?}
+    F -->|No| G[Redirect to /onboarding/profile]
+    F -->|Yes| H[Redirect to /dashboard]
 ```
 
 ---
 
-## 8. API Design
+## 🚀 Profile Completion Flow
 
-| Endpoint | Method | Purpose | Authorization |
-| :--- | :--- | :--- | :--- |
-| `/api/auth/*` | POST | NextAuth Handlers | Public |
-| `/api/submissions`| POST | Salary Submission | User |
-| `/api/compare` | POST | Comparison Engine | Public |
-| `/api/admin/reviews`| GET | Admin Queue | Admin |
-| `/api/watchlist` | POST | Watcher Engine | User |
-
----
-
-## 9. Security Architecture
-
-1.  **RBAC:** Middleware-level enforcement of `ADMIN`/`MODERATOR`/`USER` roles.
-2.  **JWT Sessions:** Secure HTTP-only cookie sessions via Auth.js.
-3.  **Data Validation:** Zod schemas applied at API routes, Server Actions, and UI forms.
-4.  **File Validation:** UploadThing enforces file-type/size limits.
-5.  **Audit Logs:** Every change in the Admin tool is persisted.
+```mermaid
+graph TD
+    A[New Account Created] --> B[Redirect to Onboarding Wizard]
+    B --> C[Fetch Google/GitHub Avatar & Name]
+    C --> D[User Inputs Experience & Company]
+    D --> E[API: PUT /api/user/profile]
+    E --> F[Set onboardingCompleted = true]
+    F --> G[Redirect to Dashboard]
+```
 
 ---
 
-## 10. Scalability Strategy
+## 🤖 AI Advisor Flow
 
-To reach **10M+ records** and **100k concurrent users**:
-*   **Database:** Partitioning `compensation_entries` by `company_id`.
-*   **Caching:** Redis for percentile data and company metadata.
-*   **Async Processing:** BullMQ + Redis for background market monitoring.
-*   **CDN:** Edge deployment for global access.
+```mermaid
+graph TD
+    A[User Submits Question] --> B[API: /api/advisor/chat]
+    B --> C[Fetch Conversation Context]
+    C --> D[Inject DB Data Context]
+    D --> E[Vercel AI SDK]
+    E --> F[Google Gemini API]
+    F --> G[Stream Response chunks]
+    G --> H[UI Rendering]
+    H --> I[Save to DB]
+```
 
 ---
 
-## 11. Deployment
+## 📈 Level Intelligence Flow
+
+```mermaid
+graph TD
+    A[Raw Compensation Data] --> B[Prisma Aggregation]
+    B --> C[Calculate Median Total Comp]
+    C --> D[Rank Levels by Compensation]
+    D --> E[Cross-Company Alignment Matrix]
+    E --> F[UI: Enterprise Level Ladder]
+```
+
+---
+
+## 🛠️ Technology Stack
+
+**Frontend:** Next.js 14, React, TypeScript, TailwindCSS, Shadcn UI, Framer Motion, Recharts  
+**Backend:** Next.js API Routes, Node.js, Prisma, Zod  
+**Database:** PostgreSQL (Neon/Supabase)  
+**AI & ML:** Google Gemini 2.5 Flash, Vercel AI SDK  
+**Authentication:** NextAuth.js (v4), bcryptjs  
+**Deployment:** Vercel (Edge Network & Serverless)
+
+---
+
+## 📦 Microservice Mapping (Future Roadmap)
+
+If the platform scales beyond the Modular Monolith, it will decompose into:
 
 ```mermaid
 graph LR
-    Dev[Developer] --> GH[GitHub Actions CI/CD]
-    GH --> Docker[Docker Image]
-    Docker --> Vercel[Vercel / K8s]
-    Vercel --> DB[(PostgreSQL)]
-    Vercel --> Cache[(Redis)]
-    Vercel --> S3[Cloudflare R2]
-    Vercel --> Resend[Resend API]
+    Gateway[API Gateway] --> Auth[Auth Service]
+    Gateway --> Comp[Compensation Service]
+    Gateway --> AI[AI & Insights Service]
+    
+    Auth --> UserDB[(User DB)]
+    Comp --> CompDB[(Comp DB)]
+    AI --> Redis[(Cache)]
+    AI --> Gemini[Gemini API]
 ```
 
 ---
 
-## 12. Roadmap
-
-- [x] **Phase 1:** Salary Contributions (Wizard + Verification Engine)
-- [x] **Phase 2:** Authentication (Auth.js + RBAC + Persistence)
-- [x] **Phase 3:** Administrative Control Center (Review Queue + Normalization)
-- [x] **Phase 4:** Market Intelligence Alerts (Watcher Engine + Notifications)
-- [ ] **Phase 5:** AI Compensation Advisor (LLM Integration)
-- [ ] **Phase 6:** Negotiation Assistant (Offers + Insights)
+## 🛡️ Security
+- **Authentication:** HTTP-only cookies, JWT encryption.
+- **Authorization:** Middleware route protection, API boundary checks.
+- **Input Validation:** Strict Zod schema parsing on all POST/PUT requests.
+- **AI Safety:** System prompt injection barriers, output sanitization.
 
 ---
-*Generated by Principal Software Architect & Technical Writer Agent*
+
+## ⚡ Performance
+- **Caching:** Next.js Data Cache (`force-cache`, `revalidate`), React query caching.
+- **Database:** Prisma connection pooling, indexed foreign keys (`@@index`), optimized relation loading.
+- **UI:** Lazy loaded charts, deferred component hydration.
+
+---
+
+## 🚀 Installation & Local Development
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/your-org/compensation-intelligence-system.git
+cd compensation-intelligence-system
+```
+
+### 2. Install dependencies
+```bash
+npm install
+```
+
+### 3. Environment Variables
+Create a `.env` file in the root directory:
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/compensation_db"
+AUTH_SECRET="your-32-char-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+
+GOOGLE_CLIENT_ID="your_google_oauth_id"
+GOOGLE_CLIENT_SECRET="your_google_oauth_secret"
+GITHUB_CLIENT_ID="your_github_oauth_id"
+GITHUB_CLIENT_SECRET="your_github_oauth_secret"
+
+GOOGLE_GENERATIVE_AI_API_KEY="your_gemini_api_key"
+```
+
+### 4. Database Setup
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+### 5. Run Development Server
+```bash
+npm run dev
+```
+Access the application at `http://localhost:3000`.
+
+---
+
+## 📊 Feature Inventory Status
+
+| Module | Status |
+|--------|--------|
+| Authentication | ✅ Implemented |
+| Dashboard | ✅ Implemented |
+| Salary Explorer | ✅ Implemented |
+| Companies | ✅ Implemented |
+| Locations | ✅ Implemented |
+| Levels | ✅ Implemented |
+| Analytics | ✅ Implemented |
+| Offers | ✅ Implemented |
+| AI Advisor | ✅ Implemented |
+| Profile | ✅ Implemented |
+| Settings | ✅ Implemented |
+| Saved Items | ⚠️ Partial |
+| Billing | ❌ Missing |
+
+---
+
+## 📜 License
+Proprietary / Closed Source. All rights reserved.
