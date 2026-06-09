@@ -95,6 +95,36 @@ export default function ExplorerPage() {
     setSelectedIds(new Set());
   };
 
+  const handleExportCSV = () => {
+    if (data.length === 0) return;
+
+    const headers = ['Company', 'Role', 'Level', 'Location', 'Base Salary', 'Stock', 'Total Compensation', 'Years Experience', 'Verified'];
+    
+    const csvRows = data.map(entry => {
+      return [
+        `"${entry.company.name}"`,
+        `"${entry.roleFamily.name}"`,
+        `"${entry.level.name}"`,
+        `"${entry.location.city}"`,
+        entry.baseSalary,
+        entry.stock,
+        entry.totalCompensation,
+        entry.yearsExperience,
+        entry.isVerified ? 'Yes' : 'No'
+      ].join(',');
+    });
+
+    const csvContent = [headers.join(','), ...csvRows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `compensation_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const selectedEntries = data.filter(d => selectedIds.has(d.id));
 
   // Dynamic Market Context Calculations based on current fetched data
@@ -223,7 +253,11 @@ export default function ExplorerPage() {
                   </span>
                </div>
                <div className="flex items-center gap-3">
-                  <button className="h-8 px-3 bg-card border border-border rounded-lg text-[10px] font-black uppercase text-slate-400 hover:bg-[#172033] flex items-center gap-2 shadow-sm transition-all">
+                  <button 
+                    onClick={handleExportCSV}
+                    disabled={data.length === 0}
+                    className="h-8 px-3 bg-card border border-border rounded-lg text-[10px] font-black uppercase text-slate-400 hover:bg-[#172033] flex items-center gap-2 shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
                     <Download className="h-3 w-3" />
                     Export CSV
                   </button>
