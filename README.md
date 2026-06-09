@@ -74,7 +74,20 @@ graph TD
         AIService --> Gemini[Google Gemini API]
     end
     
-    DB_Layer --> Postgres[(PostgreSQL)]
+    DB_Layer --> Postgres[(PostgreSQL Database)]
+    
+    classDef frontend fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff
+    classDef backend fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff
+    classDef database fill:#f59e0b,stroke:#b45309,stroke-width:2px,color:#fff
+    classDef ai fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff
+    
+    class Frontend frontend
+    class API backend
+    class Auth backend
+    class DB_Layer backend
+    class Postgres database
+    class AIService ai
+    class Gemini ai
 ```
 
 ---
@@ -245,14 +258,18 @@ If the platform scales beyond the Modular Monolith, it will decompose into:
 
 ```mermaid
 graph LR
-    Gateway[API Gateway] --> Auth[Auth Service]
-    Gateway --> Comp[Compensation Service]
-    Gateway --> AI[AI & Insights Service]
+    Client[Web Client] --> Gateway[API Gateway / BFF]
     
-    Auth --> UserDB[(User DB)]
+    Gateway --> Auth[Auth Service]
+    Gateway --> Comp[Compensation Data Service]
+    Gateway --> AI[AI & Insights Service]
+    Gateway --> User[User Profile Service]
+    
+    Auth --> UserDB[(Auth DB)]
     Comp --> CompDB[(Comp DB)]
-    AI --> Redis[(Cache)]
+    AI --> Redis[(Context Cache)]
     AI --> Gemini[Gemini API]
+    User --> ProfileDB[(Profile DB)]
 ```
 
 ---
