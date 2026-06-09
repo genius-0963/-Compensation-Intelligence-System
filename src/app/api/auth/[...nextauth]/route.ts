@@ -66,7 +66,10 @@ export const authOptions = {
     strategy: "jwt" as const,
   },
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: any }) {
+    async jwt({ token, user, trigger, session }: any) {
+      if (trigger === "update" && session?.user) {
+        token.onboardingCompleted = session.user.onboardingCompleted;
+      }
       if (user) {
         token.id = user.id;
         token.role = user.role;

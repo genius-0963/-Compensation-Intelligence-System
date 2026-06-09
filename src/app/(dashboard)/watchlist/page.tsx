@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Eye, 
   TrendingUp, 
@@ -17,8 +17,11 @@ import {
 } from 'lucide-react';
 import { Card } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
+import { TrendModal, WatchlistItem } from '@/components/watchlist/trend-modal';
 
 export default function WatchlistPage() {
+  const [selectedItem, setSelectedItem] = useState<WatchlistItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const watchlist = [
     { name: 'Google', category: 'Companies', median: 320000, change: '+4.2%', trend: 'up' },
     { name: 'Meta E5', category: 'Levels', median: 375000, change: '+1.5%', trend: 'up' },
@@ -54,7 +57,14 @@ export default function WatchlistPage() {
         <div className="lg:col-span-8 space-y-6">
            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {watchlist.map((item, i) => (
-                <Card key={i} className="p-6 border-none shadow-sm bg-card hover:shadow-md transition-all group cursor-pointer relative overflow-hidden">
+                <Card 
+                  key={i} 
+                  className="p-6 border-none shadow-sm bg-card hover:shadow-md transition-all group cursor-pointer relative overflow-hidden"
+                  onClick={() => {
+                    setSelectedItem(item as WatchlistItem);
+                    setIsModalOpen(true);
+                  }}
+                >
                    <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-3">
                          <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground group-hover:text-primary transition-colors">
@@ -130,6 +140,12 @@ export default function WatchlistPage() {
            </Card>
         </div>
       </div>
+
+      <TrendModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        item={selectedItem}
+      />
     </div>
   );
 }
