@@ -23,9 +23,7 @@ export function UserNav() {
   const userRole = session?.user?.role || "USER";
   const userTitle = profile?.roleFamily || "Senior Software Engineer";
 
-  const initials = userName
-    ? userName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
-    : 'AD';
+  const initials = 'AD'; // Deprecated in favor of generic icon
 
   const toggleDropdown = () => setIsOpen((prev) => !prev);
 
@@ -128,11 +126,11 @@ export function UserNav() {
         </div>
 
         {/* Avatar image / initials */}
-        <div className="h-9 w-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary text-xs font-black group-hover:shadow-md transition-all overflow-hidden relative">
+        <div className="h-9 w-9 rounded-full bg-muted border border-border flex items-center justify-center text-muted-foreground group-hover:shadow-md transition-all overflow-hidden relative">
           {userImage ? (
-            <img src={userImage} alt={userName} className="h-full w-full object-cover animate-fade-in" />
+            <img src={userImage} alt="Profile Picture" className="h-full w-full object-cover animate-fade-in" />
           ) : (
-            <span>{initials}</span>
+            <User className="h-4 w-4" />
           )}
         </div>
       </button>
@@ -163,11 +161,11 @@ export function UserNav() {
 
             {/* Header section */}
             <div className="flex items-center gap-4 pb-4 border-b border-border">
-              <div className="h-12 w-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary text-sm font-black overflow-hidden shrink-0">
+              <div className="h-12 w-12 rounded-xl bg-muted border border-border flex items-center justify-center text-muted-foreground overflow-hidden shrink-0">
                 {userImage ? (
-                  <img src={userImage} alt={userName} className="h-full w-full object-cover" />
+                  <img src={userImage} alt="Profile Picture" className="h-full w-full object-cover" />
                 ) : (
-                  <span>{initials}</span>
+                  <User className="h-6 w-6" />
                 )}
               </div>
               <div className="min-w-0 flex-1">

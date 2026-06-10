@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Camera, Check, Trash2, Loader2, Save, LogOut } from 'lucide-react';
+import { Camera, Check, Trash2, Loader2, Save, LogOut, User } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { Card } from "@/components/ui/card";
 
@@ -79,7 +79,7 @@ export default function ProfileSettingsPage() {
     <Card className="p-10 border-none shadow-sm bg-card min-h-[600px] animate-fade-up transition-colors">
       <div className="space-y-10">
         
-        {/* Avatar Section */}
+        {/* Profile Picture Section */}
         <div className="flex items-center gap-8">
           <div className="relative">
             {avatarUploading ? (
@@ -87,10 +87,10 @@ export default function ProfileSettingsPage() {
                 <Loader2 className="h-6 w-6 text-muted-foreground animate-spin" />
               </div>
             ) : profile?.avatarUrl ? (
-              <img src={profile.avatarUrl} alt="Avatar" className="h-24 w-24 rounded-[32px] object-cover shadow-lg bg-card" />
+              <img src={profile.avatarUrl} alt="Profile Picture" className="h-24 w-24 rounded-[32px] object-cover shadow-lg bg-card" />
             ) : (
-              <div className="h-24 w-24 rounded-[32px] bg-blue-100 dark:bg-blue-950/40 flex items-center justify-center text-blue-600 text-2xl font-black shadow-lg uppercase">
-                {profile?.name?.slice(0, 2) || profile?.email?.slice(0, 2) || "U"}
+              <div className="h-24 w-24 rounded-[32px] bg-muted flex items-center justify-center shadow-lg">
+                <User className="h-10 w-10 text-muted-foreground" />
               </div>
             )}
             
@@ -105,7 +105,7 @@ export default function ProfileSettingsPage() {
             <div className="flex flex-wrap gap-2 mt-4">
                {profile?.avatarUrl && (
                   <button onClick={handleAvatarRemove} className="px-3 py-1.5 bg-red-50 dark:bg-red-950/40 text-red-600 text-[10px] font-black uppercase tracking-widest rounded flex items-center gap-1 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors">
-                     <Trash2 className="h-3 w-3" /> Remove Avatar
+                     <Trash2 className="h-3 w-3" /> Remove Picture
                   </button>
                )}
                <button onClick={() => signOut({ callbackUrl: '/login' })} className="px-3 py-1.5 bg-muted text-muted-foreground text-[10px] font-black uppercase tracking-widest rounded flex items-center gap-1 hover:bg-muted/80 hover:text-foreground transition-colors">

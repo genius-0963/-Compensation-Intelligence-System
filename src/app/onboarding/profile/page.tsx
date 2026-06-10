@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, ArrowRight, ArrowLeft, Loader2, Building2, MapPin, Briefcase, FileText } from 'lucide-react';
+import { Check, ArrowRight, ArrowLeft, Loader2, Building2, MapPin, Briefcase, FileText, User } from 'lucide-react';
 import { Card } from "@/components/ui/card";
 
 const steps = [
@@ -82,10 +82,10 @@ export default function OnboardingProfilePage() {
           {profile && (
              <div className="flex flex-col items-center justify-center mb-6">
                 {profile.avatarUrl ? (
-                   <img src={profile.avatarUrl} alt="Avatar" className="h-20 w-20 rounded-[28px] object-cover shadow-lg border-2 border-border mb-4" />
+                   <img src={profile.avatarUrl} alt="Profile Picture" className="h-20 w-20 rounded-[28px] object-cover shadow-lg border-2 border-border mb-4" />
                 ) : (
-                   <div className="h-20 w-20 rounded-[28px] bg-blue-600/20 text-blue-500 border-2 border-blue-500/20 flex items-center justify-center text-xl font-black shadow-lg mb-4 uppercase">
-                     {profile.name?.slice(0, 2) || profile.email?.slice(0, 2) || "U"}
+                   <div className="h-20 w-20 rounded-[28px] bg-muted text-muted-foreground border-2 border-border flex items-center justify-center shadow-lg mb-4">
+                     <User className="h-10 w-10" />
                    </div>
                 )}
                 <h1 className="text-2xl font-black text-white tracking-tight">{profile.name}</h1>
