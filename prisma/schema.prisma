@@ -228,7 +228,14 @@ model Location {
   state              String?
   country            String
   region             String?
+  latitude           Float?
+  longitude          Float?
+  heroImage          String?
+  thumbnailImage     String?
   costOfLivingIndex  Float              @default(1.0)
+  pppIndex           Float              @default(1.0)
+  growthRate         Float              @default(0.0)
+  relocationScore    Float              @default(5.0)
   currency           String             @default("USD")
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
