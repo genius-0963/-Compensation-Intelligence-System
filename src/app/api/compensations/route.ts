@@ -139,35 +139,43 @@ export async function GET(req: Request) {
     const role = searchParams.get("role");
     const level = searchParams.get("level");
     const location = searchParams.get("location");
+    const verified = searchParams.get("verified") === "true";
+    const sortBy = searchParams.get("sortBy") || "submittedAt";
+    const sortDir = (searchParams.get("sortDir") || "desc") as "asc" | "desc";
+    
     const page = parseInt(searchParams.get("page") || "1");
     const pageSize = parseInt(searchParams.get("pageSize") || "20");
     const skip = (page - 1) * pageSize;
 
+    const where = {
+      ...(company && { company: { name: { contains: company, mode: 'insensitive' as const } } }),
+      ...(role && { roleFamily: { name: { contains: role, mode: 'insensitive' as const } } }),
+      ...(level && { level: { name: { equals: level, mode: 'insensitive' as const } } }),
+      ...(location && { location: { city: { equals: location, mode: 'insensitive' as const } } }),
+      ...(verified && { isVerified: true }),
+    };
+
+    let orderBy: any = { submittedAt: 'desc' };
+    if (sortBy === 'company') orderBy = { company: { name: sortDir } };
+    else if (sortBy === 'role') orderBy = { roleFamily: { name: sortDir } };
+    else if (sortBy === 'level') orderBy = { level: { name: sortDir } };
+    else orderBy = { [sortBy]: sortDir };
+
     const [entries, total] = await Promise.all([
       prisma.compensationEntry.findMany({
-        where: {
-          ...(company && { company: { name: { contains: company, mode: 'insensitive' } } }),
-          ...(role && { roleFamily: { name: { contains: role, mode: 'insensitive' } } }),
-          ...(level && { level: { name: { equals: level, mode: 'insensitive' } } }),
-          ...(location && { location: { city: { equals: location, mode: 'insensitive' } } }),
-        },
+        where,
         include: {
           company: true,
           level: true,
           location: true,
           roleFamily: true,
         },
-        orderBy: { submittedAt: 'desc' },
+        orderBy,
         skip,
         take: pageSize,
       }),
       prisma.compensationEntry.count({
-        where: {
-          ...(company && { company: { name: { contains: company, mode: 'insensitive' } } }),
-          ...(role && { roleFamily: { name: { contains: role, mode: 'insensitive' } } }),
-          ...(level && { level: { name: { equals: level, mode: 'insensitive' } } }),
-          ...(location && { location: { city: { equals: location, mode: 'insensitive' } } }),
-        },
+        where,
       })
     ]);
 
