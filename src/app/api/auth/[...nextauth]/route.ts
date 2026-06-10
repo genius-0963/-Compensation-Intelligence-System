@@ -18,18 +18,21 @@ export const authOptions = {
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+        allowDangerousEmailAccountLinking: true,
       })
     ] : []),
     ...(process.env.GITHUB_CLIENT_ID ? [
       GitHubProvider({
         clientId: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+        allowDangerousEmailAccountLinking: true,
       })
     ] : []),
     ...(process.env.LINKEDIN_CLIENT_ID ? [
       LinkedInProvider({
         clientId: process.env.LINKEDIN_CLIENT_ID,
         clientSecret: process.env.LINKEDIN_CLIENT_SECRET as string,
+        allowDangerousEmailAccountLinking: true,
       })
     ] : []),
     CredentialsProvider({
