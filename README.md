@@ -23,9 +23,10 @@
 
 ## ✨ Key Features
 
-- **Authentication:** Enterprise-grade OAuth (Google, GitHub) & Credentials login.
+- **Authentication:** Enterprise-grade OAuth (Google, GitHub) & Credentials login with NextAuth v5 support.
 - **Salary Explorer:** Advanced filtering for global compensation data.
 - **Company Intelligence:** Deep dives into company-specific compensation bands.
+- **Location Intelligence:** Interactive Global Maps, cost-of-living adjustments, AI Location Advisor, and side-by-side city metrics comparison.
 - **Level Intelligence:** Algorithmic level mapping across top tech companies (e.g., Google L5 = Meta E5).
 - **Compensation Comparison:** Side-by-side comparison of multiple compensation packages.
 - **AI Advisor:** Gemini-powered autonomous agent for personalized career and negotiation advice.
@@ -35,6 +36,7 @@
 - **Profile Management:** Comprehensive professional profile tracking.
 - **Settings:** Extensive user preferences, privacy, and security controls.
 - **Watchlist & Saved:** Track specific companies, roles, and locations over time.
+- **Automated Infrastructure:** Infrastructure-as-code via Render Blueprints (`render.yaml`).
 
 ---
 
@@ -243,12 +245,12 @@ graph TD
 
 ## 🛠️ Technology Stack
 
-**Frontend:** Next.js 14, React, TypeScript, TailwindCSS, Shadcn UI, Framer Motion, Recharts  
+**Frontend:** Next.js 14, React 19, TypeScript, TailwindCSS, Shadcn UI, Framer Motion, Recharts, React Simple Maps  
 **Backend:** Next.js API Routes, Node.js, Prisma, Zod  
-**Database:** PostgreSQL (Neon/Supabase)  
-**AI & ML:** Google Gemini 2.5 Flash, Vercel AI SDK  
-**Authentication:** NextAuth.js (v4), bcryptjs  
-**Deployment:** Vercel (Edge Network & Serverless)
+**Database:** PostgreSQL (Neon/Supabase/Render)  
+**AI & ML:** Google Gemini 2.5 Flash, Vercel AI SDK v3.x  
+**Authentication:** NextAuth.js (Auth.js Beta v5), bcryptjs  
+**Deployment:** Render (Web Service & Database via Blueprint)
 
 ---
 
@@ -298,8 +300,9 @@ cd compensation-intelligence-system
 ```
 
 ### 2. Install dependencies
+Because the project uses React 19 with Next.js 15 capabilities, use the legacy peer dependencies flag:
 ```bash
-npm install
+npm install --legacy-peer-deps
 ```
 
 ### 3. Environment Variables
@@ -328,6 +331,21 @@ npx prisma db push
 npm run dev
 ```
 Access the application at `http://localhost:3000`.
+
+---
+
+## ☁️ Deployment to Render
+
+The repository includes a `render.yaml` Blueprint file for seamless one-click deployment.
+
+1. Connect your GitHub repository to [Render](https://render.com).
+2. Click **New** -> **Blueprint**.
+3. Select this repository.
+4. Render will automatically provision:
+   - A free PostgreSQL Database.
+   - A Node.js Web Service building the Next.js app.
+5. Provide your OAuth keys (`GOOGLE_CLIENT_ID`, `GITHUB_CLIENT_ID`, etc.) in the Render dashboard when prompted.
+6. Deployment complete!
 
 ---
 
