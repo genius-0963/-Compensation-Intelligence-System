@@ -24,6 +24,13 @@ async function main() {
     process.exit(1);
   }
 
+  console.log('🔍 Checking if database is already seeded...');
+  const existingCompanies = await prisma.company.count();
+  if (existingCompanies > 0) {
+    console.log('✅ Database is already seeded. Skipping seed process to prevent data loss.');
+    return;
+  }
+
   console.log('🧹 Cleaning up database...');
   await prisma.auditLog.deleteMany();
   await prisma.savedComparison.deleteMany();
