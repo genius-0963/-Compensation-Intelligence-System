@@ -14,19 +14,24 @@ const prisma = new PrismaClient();
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
-    // Add your provider credentials to the .env file
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
-    GitHubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    }),
-    LinkedInProvider({
-      clientId: process.env.LINKEDIN_CLIENT_ID,
-      clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
-    }),
+    ...(process.env.GOOGLE_CLIENT_ID ? [
+      GoogleProvider({
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      })
+    ] : []),
+    ...(process.env.GITHUB_CLIENT_ID ? [
+      GitHubProvider({
+        clientId: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+      })
+    ] : []),
+    ...(process.env.LINKEDIN_CLIENT_ID ? [
+      LinkedInProvider({
+        clientId: process.env.LINKEDIN_CLIENT_ID,
+        clientSecret: process.env.LINKEDIN_CLIENT_SECRET as string,
+      })
+    ] : []),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
